@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teller - Início</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="icon" href="IMG/Teller Logo.png" type="image/png"> 
+    <link rel="apple-touch-icon" href="IMG/Teller Logo.png"> <style>
+        /* ===== ESTILOS GERAIS ===== */
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+
+        /* ===== HEADER & NAVEGAÇÃO ===== */
+        .shadow-custom {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Links de navegação */
+        .nav-link {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: #374151;
+            transition: all 0.3s ease;
+            border-radius: 0.25rem;
+        }
+
+        .nav-link:hover {
+            color: #2563eb;
+            background-color: #f3f4f6;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            min-width: 220px;
+            z-index: 50;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-btn {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: #374151;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+
+        .dropdown-btn:hover {
+            color: #2563eb;
+            background-color: #f3f4f6;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #4b5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+            color: #2563eb;
+            border-left-color: #2563eb;
+        }
+
+        /* ===== MENU MOBILE ===== */
+        .mobile-menu-button {
+            padding: 0.5rem;
+            color: #374151;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-button:hover {
+            color: #2563eb;
+        }
+
+        .mobile-menu {
+            display: none;
+            background-color: white;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .mobile-menu-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #4b5563;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-menu-item:hover {
+            background-color: #f3f4f6;
+            color: #2563eb;
+            border-left-color: #2563eb;
+        }
+
+        /* ===== CONTEÚDO PRINCIPAL ===== */
+        .main-content {
+            padding-top: 6rem;
+            max-width: 56rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 6rem 2rem 2rem;
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #111827;
+            line-height: 1.2;
+        }
+
+        .main-subtitle {
+            font-size: 1.25rem;
+            color: #4b5563;
+            max-width: 36rem;
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 5rem 1.5rem 2rem;
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .main-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="fixed w-full bg-white shadow-custom z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="index.html">
+                        <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+                    </a>
+                </div>
+                
+                <nav class="hidden md:flex space-x-2 items-center">
+                    <a href="index.html" class="nav-link">Início</a>
+                    
+                    <div class="dropdown">
+                        <button class="dropdown-btn">Financeiro</button>
+                        <div class="dropdown-content">
+                            <a href="boleto.html" class="dropdown-item">Boleto</a>
+                            <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+                            <a href="multa.html" class="dropdown-item">Multa</a>
+                            <a href="trancamento.html" class="dropdown-item">Trancamento</a>
+                            <a href="destrancamento.html" class="dropdown-item">Destrancamento</a>
+                            <a href="financeiro_dashboard.html" class="dropdown-item">Dashboard</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown">
+                        <button class="dropdown-btn">Comercial</button>
+                        <div class="dropdown-content">
+                            <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+                            <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown">
+                        <button class="dropdown-btn">Pós-Venda</button>
+                        <div class="dropdown-content">
+                            <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown">
+                        <button class="dropdown-btn">Geral</button>
+                        <div class="dropdown-content">
+                            <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+                            <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+                        </div>
+                    </div>
+                    
+                    <a href="contato.html" class="nav-link">Contato</a>
+                </nav>
+                
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="mobile-menu-button">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+            <a href="index.html" class="mobile-menu-item">Início</a>
+            <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+            <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+            <a href="multa.html" class="mobile-menu-item">Multa</a>
+            <a href="trancamento.html" class="mobile-menu-item">Trancamento</a>
+            <a href="destrancamento.html" class="mobile-menu-item">Destrancamento</a>
+            <a href="financeiro_dashboard.html" class="mobile-menu-item">Dashboard</a>
+            <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+            <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+            <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+            <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+            <a href="contato.html" class="mobile-menu-item">Contato</a>
+        </div>
+    </header>
+
+    <main class="main-content flex flex-col items-center text-center">
+        <h1 class="main-title">Seu Parceiro Completo em Gestão Empresarial.</h1>
+        <p class="main-subtitle mb-8">O Teller otimiza seus processos financeiros, comerciais e de pós-venda, permitindo que você foque no crescimento do seu negócio.</p>
+
+        <section class="w-full max-w-4xl mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h3 class="text-xl font-semibold text-blue-600 mb-3">Controle Financeiro</h3>
+                <p class="text-gray-600 mb-4">Gerencie boletos, PIX, multas e tenha uma visão clara do seu dashboard financeiro.</p>
+                <a href="financeiro_dashboard.html" class="inline-flex items-center text-blue-500 hover:text-blue-700 font-medium">
+                    Explorar Financeiro
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h3 class="text-xl font-semibold text-green-600 mb-3">Vendas e Contratos</h3>
+                <p class="text-gray-600 mb-4">Centralize seus contratos comerciais e de pós-venda para uma gestão eficiente.</p>
+                <a href="contratos_comercial.html" class="inline-flex items-center text-green-500 hover:text-green-700 font-medium">
+                    Ver Contratos
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h3 class="text-xl font-semibold text-purple-600 mb-3">Pós-Venda Eficiente</h3>
+                <p class="text-gray-600 mb-4">Acompanhe contratos, procedimentos e scripts para um atendimento impecável.</p>
+                <a href="contratos_pos_venda.html" class="inline-flex items-center text-purple-500 hover:text-purple-700 font-medium">
+                    Saiba Mais
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="w-full max-w-4xl mt-16 bg-blue-600 text-white p-8 rounded-lg shadow-xl flex flex-col items-center">
+            <h2 class="text-3xl font-bold mb-4">Pronto para Transformar sua Gestão?</h2>
+            <p class="text-lg mb-6 max-w-2xl">Navegue pelas seções acima ou entre em contato conosco para descobrir como o Teller pode impulsionar seu negócio.</p>
+            <a href="contato.html" class="bg-white text-blue-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300 text-lg">
+                Fale Conosco
+            </a>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu Mobile
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            // Abrir/Fechar menu mobile
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+                
+                // Animação suave
+                if (mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.style.opacity = '0';
+                    mobileMenu.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        mobileMenu.style.display = 'none';
+                    }, 300);
+                } else {
+                    mobileMenu.style.display = 'block';
+                    setTimeout(() => {
+                        mobileMenu.style.opacity = '1';
+                        mobileMenu.style.transform = 'translateY(0)';
+                    }, 10);
+                }
+            });
+            
+            // Fechar menu ao clicar fora
+            document.addEventListener('click', function(e) {
+                if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.style.opacity = '0';
+                    mobileMenu.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        mobileMenu.style.display = 'none';
+                    }, 300);
+                }
+            });
+            
+            // Prevenir fechamento ao clicar no menu
+            mobileMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Dropdowns - Adicionando acessibilidade
+            const dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                const btn = dropdown.querySelector('.dropdown-btn');
+                
+                // Teclado
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

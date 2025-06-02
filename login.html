@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teller - Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .login-card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .form-input {
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .login-btn {
+      transition: all 0.3s ease;
+    }
+    .login-btn:hover {
+      background-color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+  
+  <header class="fixed w-full bg-white shadow-custom z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0">
+          <a href="index.html">
+            <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+          </a>
+        </div>
+        <nav class="hidden md:flex space-x-8 items-center">
+          <a href="login.html" class="px-3 py-2 text-blue-600 font-medium border-b-2 border-blue-600">Login</a>
+        </nav>
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="p-2 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
+      <a href="login.html" class="block px-4 py-2 bg-blue-50 text-blue-600 font-medium">Login</a>
+    </div>
+  </header>
+
+  <main class="flex-grow flex items-center justify-center pt-16 pb-8 px-4">
+    <div class="login-card p-8 w-full">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Acesse sua conta</h1>
+        <p class="text-gray-600">Entre com suas credenciais para acessar o sistema</p>
+      </div>
+      
+      <form class="space-y-6">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+          <input id="email" name="email" type="email" required 
+                 class="w-full p-3 border border-gray-300 rounded-md form-input focus:ring-blue-500 focus:border-blue-500"
+                 placeholder="seu@email.com">
+        </div>
+        
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+          <input id="password" name="password" type="password" required 
+                 class="w-full p-3 border border-gray-300 rounded-md form-input focus:ring-blue-500 focus:border-blue-500"
+                 placeholder="Digite sua senha">
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input id="remember-me" name="remember-me" type="checkbox" 
+                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+            <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+              Lembrar-me
+            </label>
+          </div>
+          
+          <div class="text-sm">
+            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
+              Esqueceu sua senha?
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <button type="submit" 
+                  class="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-md login-btn hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Entrar
+          </button>
+        </div>
+      </form>
+      
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+          Não tem uma conta? 
+          <a href="cadastro.html" class="font-medium text-blue-600 hover:text-blue-500">
+            Cadastre-se
+          </a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Teller</h3>
+          <p class="text-gray-400">Soluções financeiras e comerciais para o seu negócio.</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Contato</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li>contato@teller.com.br</li>
+            <li>(00) 0000-0000</li>
+            <li>Av. Exemplo, 123 - Centro</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Links Rápidos</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors duration-200">Início</a></li>
+            <li><a href="login.html" class="text-gray-400 hover:text-white transition-colors duration-200">Login</a></li>
+            <li><a href="cadastro.html" class="text-gray-400 hover:text-white transition-colors duration-200">Cadastro</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2023 Teller. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+    
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Login realizado com sucesso! Redirecionando...');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>

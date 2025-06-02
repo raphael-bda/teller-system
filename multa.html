@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teller - Multa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9fafb;
+    }
+    .shadow-custom { 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      left: 0;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      min-width: 220px;
+      z-index: 50;
+      overflow: hidden;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .nav-link {
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s ease;
+      border-radius: 0.25rem;
+    }
+    .nav-link:hover {
+      color: #2563eb;
+      background-color: #f3f4f6;
+    }
+    .dropdown-btn {
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 0.25rem;
+    }
+    .dropdown-btn:hover {
+      color: #2563eb;
+      background-color: #f3f4f6;
+    }
+    .dropdown-item {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #4b5563;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    .dropdown-item:hover, .dropdown-item.active {
+      background-color: #f3f4f6;
+      color: #2563eb;
+      border-left-color: #2563eb;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .form-button {
+      background-color: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .form-button:hover {
+      background-color: #2563eb;
+    }
+    .result-card {
+      background-color: #f8fafc;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      border-left: 4px solid #3b82f6;
+    }
+    .copy-button {
+      background-color: #10b981;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    .copy-button:hover {
+      background-color: #059669;
+    }
+    .mobile-menu-button {
+      padding: 0.5rem;
+      color: #374151;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .mobile-menu-button:hover {
+      color: #2563eb;
+    }
+    .mobile-menu {
+      display: none;
+      background-color: white;
+    }
+    .mobile-menu-item {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #4b5563;
+      transition: all 0.2s ease;
+    }
+    .mobile-menu-item:hover, .mobile-menu-item.active {
+      background-color: #f3f4f6;
+      color: #2563eb;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  
+  <header class="fixed w-full bg-white shadow-custom z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0">
+          <a href="index.html">
+            <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+          </a>
+        </div>
+        
+        <!-- Navegação Desktop -->
+        <nav class="hidden md:flex space-x-2 items-center">
+          <a href="index.html" class="nav-link">Início</a>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Financeiro</button>
+            <div class="dropdown-content">
+              <a href="boleto.html" class="dropdown-item">Boleto</a>
+              <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+              <a href="multa.html" class="dropdown-item active">Multa</a>
+              <a href="trancamento.html" class="dropdown-item">Trancamento</a>
+              <a href="destrancamento.html" class="dropdown-item">Destrancamento</a>
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Comercial</button>
+            <div class="dropdown-content">
+              <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Pós-Venda</button>
+            <div class="dropdown-content">
+              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Geral</button>
+            <div class="dropdown-content">
+              <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+              <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+            </div>
+          </div>
+          
+          <a href="contato.html" class="nav-link">Contato</a>
+        </nav>
+        
+        <!-- Botão Menu Mobile -->
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="mobile-menu-button">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Menu Mobile -->
+    <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+      <a href="index.html" class="mobile-menu-item">Início</a>
+      <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+      <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+      <a href="multa.html" class="mobile-menu-item active">Multa</a>
+      <a href="trancamento.html" class="mobile-menu-item">Trancamento</a>
+      <a href="destrancamento.html" class="mobile-menu-item">Destrancamento</a>
+      <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+      <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+      <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+      <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+      <a href="contato.html" class="mobile-menu-item">Contato</a>
+    </div>
+  </header>
+
+  <script>
+    // Menu mobile
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+    });
+  </script>
+
+  <main class="pt-24 max-w-4xl mx-auto py-8 px-4">
+    <h1 class="text-2xl font-semibold mb-4">Calculadora de Multas</h1>
+    <p class="text-gray-600 mb-8">Cálculo de multa contratual (10% do valor do semestre) + valores em atraso.</p>
+    
+    <div class="bg-white rounded-lg shadow-custom p-6 mb-8">
+      <h2 class="text-xl font-semibold mb-4">Informe os dados</h2>
+      
+      <form id="multa-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Valor da Mensalidade (R$)</label>
+          <input type="number" id="valor-mensalidade" class="form-input" placeholder="Digite o valor da mensalidade" step="0.01" required>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Valor em Atraso (R$)</label>
+          <input type="number" id="valor-atraso" class="form-input" placeholder="Digite o valor em atraso" step="0.01" required value="0">
+        </div>
+        
+        <button type="submit" class="form-button">Calcular Multa</button>
+      </form>
+    </div>
+    
+    <div id="resultado" class="result-card hidden">
+      <h3 class="text-lg font-semibold mb-3">Resultado do Cálculo</h3>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <span>Valor do semestre (6x):</span>
+          <span id="valor-semestre" class="font-medium">R$ 0,00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Multa contratual (10%):</span>
+          <span id="multa-contratual" class="font-medium">R$ 0,00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Valores em atraso:</span>
+          <span id="valores-atraso" class="font-medium">R$ 0,00</span>
+        </div>
+        <div class="flex justify-between border-t border-gray-200 pt-2 mt-2">
+          <span class="font-semibold">Total a pagar:</span>
+          <span id="total-pagar" class="font-bold">R$ 0,00</span>
+        </div>
+      </div>
+      
+      <button id="copy-button" class="copy-button">Copiar Resultado</button>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const multaForm = document.getElementById('multa-form');
+      const resultadoDiv = document.getElementById('resultado');
+      const copyButton = document.getElementById('copy-button');
+      
+      multaForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Obter valores do formulário
+        const valorMensalidade = parseFloat(document.getElementById('valor-mensalidade').value);
+        const valorAtraso = parseFloat(document.getElementById('valor-atraso').value) || 0;
+        
+        // Validar valores
+        if (isNaN(valorMensalidade)) {
+          alert('Por favor, informe o valor da mensalidade.');
+          return;
+        }
+        
+        // Calcular valores
+        const valorSemestre = valorMensalidade * 6;
+        const multaContratual = valorSemestre * 0.1;
+        const totalPagar = multaContratual + valorAtraso;
+        
+        // Exibir resultados
+        document.getElementById('valor-semestre').textContent = formatCurrency(valorSemestre);
+        document.getElementById('multa-contratual').textContent = formatCurrency(multaContratual);
+        document.getElementById('valores-atraso').textContent = formatCurrency(valorAtraso);
+        document.getElementById('total-pagar').textContent = formatCurrency(totalPagar);
+        
+        resultadoDiv.classList.remove('hidden');
+      });
+      
+      copyButton.addEventListener('click', function() {
+        const valorSemestre = document.getElementById('valor-semestre').textContent;
+        const multaContratual = document.getElementById('multa-contratual').textContent;
+        const valoresAtraso = document.getElementById('valores-atraso').textContent;
+        const totalPagar = document.getElementById('total-pagar').textContent;
+        
+        const texto = `*Cálculo de Multa Contratual*\n\n` +
+                      `🔹 Valor do semestre (6x): ${valorSemestre}\n` +
+                      `🔹 Multa contratual (10%): ${multaContratual}\n` +
+                      `🔹 Valores em atraso: ${valoresAtraso}\n` +
+                      `💰 *Total a pagar:* ${totalPagar}\n\n` +
+                      `_Valores calculados conforme condições contratuais_`;
+        
+        navigator.clipboard.writeText(texto).then(() => {
+          // Feedback visual
+          const originalText = copyButton.textContent;
+          copyButton.textContent = 'Copiado!';
+          
+          setTimeout(() => {
+            copyButton.textContent = originalText;
+          }, 2000);
+        }).catch(err => {
+          console.error('Erro ao copiar texto: ', err);
+          alert('Não foi possível copiar o texto. Por favor, copie manualmente.');
+        });
+      });
+      
+      // Função para formatar moeda
+      function formatCurrency(value) {
+        return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
+      }
+    });
+  </script>
+</body>
+</html>

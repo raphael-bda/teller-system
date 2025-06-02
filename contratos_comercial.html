@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teller - Contratos Comercial</title>
+  <!-- Import Poppins from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .dropdown-menu { display: none; }
+    .dropdown:hover > .dropdown-menu { display: block; }
+    .form-input {
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .btn-calculate {
+      transition: all 0.3s ease;
+    }
+    .btn-calculate:hover {
+      background-color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .course-details {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  
+  <header class="fixed w-full bg-white shadow-custom z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0">
+          <a href="index.html">
+            <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+          </a>
+        </div>
+        <nav class="hidden md:flex space-x-8 items-center">
+          <a href="index.html" class="px-3 py-2 hover:text-blue-600 font-medium">Início</a>
+          <div class="relative dropdown inline-block">
+            <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Financeiro</button>
+            <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+              <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
+              <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
+              <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
+              <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
+              <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
+            </div>
+          </div>
+          <div class="relative dropdown inline-block">
+            <button class="px-3 py-2 text-blue-600 font-medium border-b-2 border-blue-600 focus:outline-none">Comercial</button>
+            <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+              <a href="contratos_comercial.html" class="block px-4 py-2 bg-gray-100 text-blue-600">Contratos Comercial</a>
+              <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          <div class="relative dropdown inline-block">
+            <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Pós-Venda</button>
+            <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+              <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          <div class="relative dropdown inline-block">
+            <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Geral</button>
+            <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+              <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
+              <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
+            </div>
+          </div>
+          <a href="contato.html" class="px-3 py-2 hover:text-blue-600 font-medium">Contato</a>
+        </nav>
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="p-2 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
+      <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Início</a>
+      <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
+      <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
+      <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
+      <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
+      <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
+      <a href="contratos_comercial.html" class="block px-4 py-2 bg-gray-100 text-blue-600">Contratos Comercial</a>
+      <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+      <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
+      <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
+      <a href="contato.html" class="block px-4 py-2 hover:bg-gray-100">Contato</a>
+    </div>
+  </header>
+
+  <main class="pt-24 max-w-4xl mx-auto py-8 px-4">
+    <div class="bg-white rounded-lg shadow-custom p-6 md:p-8 mb-8">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">SELEÇÃO DE CURSOS E PARCELAS (COMERCIAL)</h1>
+      
+      <div class="space-y-6">
+        <div>
+          <label for="course" class="block text-sm font-medium text-gray-700 mb-1">SELECIONE O CURSO:</label>
+          <select id="course" class="w-full p-3 border border-gray-300 rounded-md form-input focus:ring-blue-500 focus:border-blue-500">
+            <option value="">SELECIONE O CURSO</option>
+            <optgroup label="IEFE PEDAGOGIA MAGISTÉRIO (E A V)">
+              <option value="pedagogia_eav">PEDAGOGIA</option>
+              <option value="combo_alf_eav">COMBO ALF</option>
+              <option value="combo_gestao_eav">COMBO GESTÃO</option>
+            </optgroup>
+            <optgroup label="IEFE PEDAGOGIA MAGISTÉRIO (E A D)">
+              <option value="pedagogia_ead">PEDAGOGIA</option>
+              <option value="combo_alf_ead">COMBO ALF</option>
+              <option value="combo_gestao_ead">COMBO GESTÃO</option>
+            </optgroup>
+            <optgroup label="FAEV FACULDADE EVOLUÇÃO">
+              <option value="pedagogia_faev">PEDAGOGIA EAD</option>
+            </optgroup>
+          </select>
+        </div>
+        
+        <div>
+          <label for="installments" class="block text-sm font-medium text-gray-700 mb-1">SELECIONE O NÚMERO DE PARCELAS:</label>
+          <select id="installments" class="w-full p-3 border border-gray-300 rounded-md form-input focus:ring-blue-500 focus:border-blue-500">
+            <option value="">SELECIONE O NÚMERO DE PARCELAS</option>
+            <option value="boleto_19">Boleto - 19 parcelas</option>
+            <option value="cartao_12">Cartão - 12 parcelas</option>
+            <option value="avista">À Vista</option>
+          </select>
+        </div>
+        
+        <div class="pt-4">
+          <button id="calculate-btn" class="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-md btn-calculate hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            CALCULAR DETALHES
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="course-details" class="bg-white rounded-lg shadow-custom p-6 md:p-8 course-details">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">DETALHES DO CURSO:</h2>
+      
+      <div class="space-y-3">
+        <div class="flex justify-between border-b pb-2">
+          <span class="font-medium">NOME DO CURSO:</span>
+          <span id="course-name" class="font-semibold">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="font-medium">VALOR TOTAL DO CURSO:</span>
+          <span id="total-value" class="font-semibold">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="font-medium">QUANTIDADE DE PARCELAS:</span>
+          <span id="installment-count" class="font-semibold">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="font-medium">VALOR TOTAL DO SEMESTRE:</span>
+          <span id="semester-value" class="font-semibold">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="font-medium">VALOR DA PARCELA SEM DESCONTO:</span>
+          <span id="installment-full" class="font-semibold">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="font-medium">VALOR DA 1ª PARCELA COM DESCONTO:</span>
+          <span id="first-discount" class="font-semibold">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="font-medium">VALOR DA PARCELA COM DESCONTO:</span>
+          <span id="installment-discount" class="font-semibold">-</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+    
+    // Course data
+    const courses = {
+      "pedagogia_eav": {
+        name: "PEDAGOGIA (IEFE E A V)",
+        fullValue: "R$ 6.264,00",
+        boleto: {
+          total: "R$5.643,00",
+          installments: 19,
+          value: "R$297,00"
+        },
+        cartao: {
+          total: "R$4.514,40",
+          installments: 12,
+          value: "R$376,20"
+        },
+        avista: "R$3.564,12"
+      },
+      "combo_alf_eav": {
+        name: "COMBO ALF (IEFE E A V)",
+        fullValue: "R$6.264,00",
+        boleto: {
+          total: "R$6.122,66",
+          installments: 19,
+          value: "R$322,25"
+        },
+        cartao: {
+          total: "R$4.898,12",
+          installments: 12,
+          value: "R$408,18"
+        },
+        avista: "R$3.867,07"
+      },
+      "combo_gestao_eav": {
+        name: "COMBO GESTÃO (IEFE E A V)",
+        fullValue: "R$6.264,00",
+        boleto: {
+          total: "R$6.517,67",
+          installments: 19,
+          value: "R$343,04"
+        },
+        cartao: {
+          total: "R$5.214,13",
+          installments: 12,
+          value: "R$434,51"
+        },
+        avista: "R$4.116,56"
+      },
+      "pedagogia_ead": {
+        name: "PEDAGOGIA (IEFE E A D)",
+        fullValue: "R$3.705,00",
+        boleto: {
+          total: "R$3.705,00",
+          installments: 19,
+          value: "R$195,00"
+        },
+        cartao: {
+          total: "R$2.964,00",
+          installments: 12,
+          value: "R$247,00"
+        },
+        avista: "R$2.340,08"
+      },
+      "combo_alf_ead": {
+        name: "COMBO ALF (IEFE E A D)",
+        fullValue: "R$4.223,70",
+        boleto: {
+          total: "R$4.223,70",
+          installments: 19,
+          value: "R$222,30"
+        },
+        cartao: {
+          total: "R$3.378,96",
+          installments: 12,
+          value: "R$281,58"
+        },
+        avista: "R$2.667,69"
+      },
+      "combo_gestao_ead": {
+        name: "COMBO GESTÃO (IEFE E A D)",
+        fullValue: "R$4.582,71",
+        boleto: {
+          total: "R$4.582,71",
+          installments: 19,
+          value: "R$241,20"
+        },
+        cartao: {
+          total: "R$3.666,17",
+          installments: 12,
+          value: "R$305,51"
+        },
+        avista: "R$2.894,44"
+      },
+      "pedagogia_faev": {
+        name: "PEDAGOGIA EAD (FAEV)",
+        fullValue: "R$7.086,24",
+        boleto: {
+          total: "R$7.086,24",
+          installments: 48,
+          value: "R$147,63"
+        },
+        cartao: {
+          total: "R$6.377,28",
+          installments: 48,
+          value: "R$132,86"
+        },
+        avista: "Não disponível"
+      }
+    };
+    
+    // Calculate button functionality
+    document.getElementById('calculate-btn').addEventListener('click', function() {
+      const courseSelect = document.getElementById('course');
+      const installmentSelect = document.getElementById('installments');
+      const courseDetails = document.getElementById('course-details');
+      
+      if (!courseSelect.value || !installmentSelect.value) {
+        alert('Por favor, selecione um curso e uma opção de parcelamento.');
+        return;
+      }
+      
+      const course = courses[courseSelect.value];
+      const installmentType = installmentSelect.value.split('_')[0];
+      
+      // Show course details section
+      courseDetails.style.display = 'block';
+      
+      // Update course details
+      document.getElementById('course-name').textContent = course.name;
+      document.getElementById('total-value').textContent = course.fullValue;
+      
+      if (installmentType === 'boleto') {
+        document.getElementById('installment-count').textContent = course.boleto.installments;
+        document.getElementById('semester-value').textContent = course.boleto.total;
+        document.getElementById('installment-full').textContent = course.boleto.value;
+        document.getElementById('first-discount').textContent = course.boleto.value;
+        document.getElementById('installment-discount').textContent = course.boleto.value;
+      } else if (installmentType === 'cartao') {
+        document.getElementById('installment-count').textContent = course.cartao.installments;
+        document.getElementById('semester-value').textContent = course.cartao.total;
+        document.getElementById('installment-full').textContent = course.cartao.value;
+        document.getElementById('first-discount').textContent = course.cartao.value;
+        document.getElementById('installment-discount').textContent = course.cartao.value;
+      } else if (installmentType === 'avista') {
+        document.getElementById('installment-count').textContent = '1';
+        document.getElementById('semester-value').textContent = course.avista;
+        document.getElementById('installment-full').textContent = course.avista;
+        document.getElementById('first-discount').textContent = course.avista;
+        document.getElementById('installment-discount').textContent = course.avista;
+      }
+    });
+  </script>
+</body>
+</html>

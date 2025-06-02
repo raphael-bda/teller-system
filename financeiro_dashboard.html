@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Financeiro - Teller</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Estilos personalizados */
+    body { 
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8fafc;
+    }
+    .shadow-custom { 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard-card {
+      background-color: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .input-field {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .readonly-field {
+      background-color: #f8fafc;
+      color: #64748b;
+    }
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-top: 2rem;
+    }
+    .fullscreen-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .fullscreen-chart-container {
+      position: relative;
+      width: 80%;
+      height: 60%;
+      min-height: 400px;
+    }
+    .fullscreen-summary {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .fullscreen-summary-item {
+      text-align: center;
+      padding: 1.5rem 2.5rem;
+      border-radius: 0.5rem;
+      min-width: 250px;
+      flex: 1;
+    }
+    .fullscreen-summary-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .fullscreen-summary-value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .close-fullscreen {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    
+    /* Menu dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      left: 0;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      min-width: 220px;
+      z-index: 50;
+      overflow: hidden;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-btn {
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 0.25rem;
+    }
+    .dropdown-btn:hover {
+      color: #2563eb;
+      background-color: #f3f4f6;
+    }
+    .dropdown-item {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #4b5563;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    .dropdown-item:hover, .dropdown-item.active {
+      background-color: #f3f4f6;
+      color: #2563eb;
+      border-left-color: #2563eb;
+    }
+    .nav-link {
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s ease;
+      border-radius: 0.25rem;
+    }
+    .nav-link:hover {
+      color: #2563eb;
+      background-color: #f3f4f6;
+    }
+    .mobile-menu-button {
+      padding: 0.5rem;
+      color: #374151;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .mobile-menu-button:hover {
+      color: #2563eb;
+    }
+    .mobile-menu {
+      display: none;
+      background-color: white;
+      animation: slideDown 0.3s ease-out;
+    }
+    .mobile-menu-item {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #4b5563;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    .mobile-menu-item:hover, .mobile-menu-item.active {
+      background-color: #f3f4f6;
+      color: #2563eb;
+      border-left-color: #2563eb;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Cores para o item de percentual */
+    .bg-indigo-50 { background-color: #eef2ff; }
+    .text-indigo-800 { color: #3730a3; }
+    .text-indigo-600 { color: #4f46e5; }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .logo {
+        height: 60px;
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .fullscreen-summary {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+      }
+      .fullscreen-summary-item {
+        min-width: auto;
+        padding: 1rem 1.5rem;
+        width: 100%;
+      }
+      .fullscreen-chart-container {
+        width: 95%;
+        height: 50%;
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <!-- Header -->
+  <header class="fixed w-full bg-white shadow-custom z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0">
+          <a href="index.html">
+            <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+          </a>
+        </div>
+        
+        <!-- Navegação Desktop -->
+        <nav class="hidden md:flex space-x-2 items-center">
+          <a href="index.html" class="nav-link">Início</a>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Financeiro</button>
+            <div class="dropdown-content">
+              <a href="financeiro_dashboard.html" class="dropdown-item active">Dashboard</a>
+              <a href="boleto.html" class="dropdown-item">Boleto</a>
+              <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+              <a href="multa.html" class="dropdown-item">Multa</a>
+              <a href="trancamento.html" class="dropdown-item">Trancamento</a>
+              <a href="destrancamento.html" class="dropdown-item">Destrancamento</a>
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Comercial</button>
+            <div class="dropdown-content">
+              <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Pós-Venda</button>
+            <div class="dropdown-content">
+              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button class="dropdown-btn">Geral</button>
+            <div class="dropdown-content">
+              <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+              <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+            </div>
+          </div>
+          
+          <a href="contato.html" class="nav-link">Contato</a>
+        </nav>
+        
+        <!-- Botão Menu Mobile -->
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="mobile-menu-button">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Menu Mobile -->
+    <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+      <a href="index.html" class="mobile-menu-item">Início</a>
+      <a href="financeiro_dashboard.html" class="mobile-menu-item active">Dashboard</a>
+      <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+      <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+      <a href="multa.html" class="mobile-menu-item">Multa</a>
+      <a href="trancamento.html" class="mobile-menu-item">Trancamento</a>
+      <a href="destrancamento.html" class="mobile-menu-item">Destrancamento</a>
+      <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+      <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+      <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+      <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+      <a href="contato.html" class="mobile-menu-item">Contato</a>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="pt-24 pb-8 px-4 max-w-6xl mx-auto">
+    <div class="dashboard-card">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Dashboard Financeiro</h1>
+        <button id="fullscreen-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          Modo Apresentação
+        </button>
+      </div>
+      
+      <!-- Cards de Métricas -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Meta (R$)</label>
+          <input id="inputMeta" type="number" class="input-field" placeholder="Digite a meta" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Recebido (R$)</label>
+          <input id="inputRecebido" type="number" class="input-field" placeholder="Digite o valor recebido" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Percentual Alcançado</label>
+          <input id="inputPercent" type="text" class="input-field readonly-field" readonly />
+        </div>
+      </div>
+      
+      <!-- Gráfico -->
+      <div class="chart-container">
+        <canvas id="chartFinanceiro"></canvas>
+      </div>
+      
+      <!-- Resumo -->
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h3 class="font-medium text-blue-800">Meta Total</h3>
+          <p id="metaTotal" class="text-2xl font-bold text-blue-600">R$ 0,00</p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <h3 class="font-medium text-green-800">Recebido Total</h3>
+          <p id="recebidoTotal" class="text-2xl font-bold text-green-600">R$ 0,00</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Tela cheia -->
+  <div id="fullscreen-container" class="fullscreen-container hidden">
+    <button id="close-fullscreen" class="close-fullscreen">Fechar (ESC)</button>
+    <div class="fullscreen-chart-container">
+      <canvas id="chartFullscreen"></canvas>
+    </div>
+    <div class="fullscreen-summary">
+      <div class="fullscreen-summary-item bg-blue-50">
+        <div class="fullscreen-summary-title text-blue-800">Meta Total</div>
+        <div id="fullscreen-meta" class="fullscreen-summary-value text-blue-600">R$ 0,00</div>
+      </div>
+      <div class="fullscreen-summary-item bg-green-50">
+        <div class="fullscreen-summary-title text-green-800">Recebido Total</div>
+        <div id="fullscreen-recebido" class="fullscreen-summary-value text-green-600">R$ 0,00</div>
+      </div>
+      <div class="fullscreen-summary-item bg-indigo-50">
+        <div class="fullscreen-summary-title text-indigo-800">Percentual Alcançado</div>
+        <div id="fullscreen-percent" class="fullscreen-summary-value text-indigo-600">0%</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Elementos do DOM
+    const metaInput = document.getElementById('inputMeta');
+    const recInput = document.getElementById('inputRecebido');
+    const pctInput = document.getElementById('inputPercent');
+    const metaTotal = document.getElementById('metaTotal');
+    const recTotal = document.getElementById('recebidoTotal');
+    const fullscreenMeta = document.getElementById('fullscreen-meta');
+    const fullscreenRecebido = document.getElementById('fullscreen-recebido');
+    const fullscreenPercent = document.getElementById('fullscreen-percent');
+    const ctx = document.getElementById('chartFinanceiro').getContext('2d');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const fullscreenContainer = document.getElementById('fullscreen-container');
+    const closeFullscreen = document.getElementById('close-fullscreen');
+    
+    // Configuração do gráfico principal
+    const chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Recebido', 'A Receber'],
+        datasets: [{
+          data: [0, 100],
+          backgroundColor: ['#10B981', '#E5E7EB'],
+          borderWidth: 0,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '75%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 12,
+              padding: 20,
+              font: {
+                family: 'Poppins',
+                size: 13
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.label}: R$ ${context.raw.toFixed(2).replace('.', ',')}`;
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    // Gráfico em tela cheia
+    let fullscreenChartInstance = null;
+    
+    function initFullscreenChart() {
+      const ctxFull = document.getElementById('chartFullscreen').getContext('2d');
+      fullscreenChartInstance = new Chart(ctxFull, {
+        type: 'doughnut',
+        data: JSON.parse(JSON.stringify(chart.data)), // Clone dos dados
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: '60%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 16,
+                padding: 30,
+                font: {
+                  family: 'Poppins',
+                  size: 16
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.label}: R$ ${context.raw.toFixed(2).replace('.', ',')}`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // Função para formatar moeda
+    function formatCurrency(value) {
+      return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
+    }
+    
+    // Função para atualizar o dashboard
+    function updateDashboard() {
+      const meta = parseFloat(metaInput.value) || 0;
+      const rec = parseFloat(recInput.value) || 0;
+      const pct = meta > 0 ? (rec / meta) * 100 : 0;
+      
+      // Atualizar campos
+      pctInput.value = pct.toFixed(2) + '%';
+      metaTotal.textContent = formatCurrency(meta);
+      recTotal.textContent = formatCurrency(rec);
+      fullscreenMeta.textContent = formatCurrency(meta);
+      fullscreenRecebido.textContent = formatCurrency(rec);
+      fullscreenPercent.textContent = pct.toFixed(2) + '%';
+      
+      // Atualizar gráfico
+      chart.data.datasets[0].data = [rec, Math.max(meta - rec, 0)];
+      chart.update();
+      
+      // Atualizar gráfico em tela cheia se existir
+      if (fullscreenChartInstance) {
+        fullscreenChartInstance.data.datasets[0].data = [rec, Math.max(meta - rec, 0)];
+        fullscreenChartInstance.update();
+      }
+    }
+    
+    // Event listeners
+    metaInput.addEventListener('input', updateDashboard);
+    recInput.addEventListener('input', updateDashboard);
+    
+    // Menu mobile
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Tela cheia
+    fullscreenBtn.addEventListener('click', function() {
+      if (!fullscreenChartInstance) {
+        initFullscreenChart();
+      }
+      
+      // Atualizar dados do gráfico em tela cheia
+      fullscreenChartInstance.data.datasets[0].data = chart.data.datasets[0].data;
+      fullscreenChartInstance.update();
+      
+      // Atualizar valores na tela cheia
+      fullscreenMeta.textContent = metaTotal.textContent;
+      fullscreenRecebido.textContent = recTotal.textContent;
+      fullscreenPercent.textContent = pctInput.value;
+      
+      fullscreenContainer.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    closeFullscreen.addEventListener('click', function() {
+      fullscreenContainer.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+    
+    // Fechar com ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !fullscreenContainer.classList.contains('hidden')) {
+        fullscreenContainer.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
+</body>
+</html>

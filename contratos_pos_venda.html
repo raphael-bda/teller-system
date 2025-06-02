@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teller - Contratos Pos Venda</title>
+  <!-- Import Poppins from Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .dropdown-menu { display: none; }
+    .dropdown:hover > .dropdown-menu { display: block; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  
+<header class="fixed w-full bg-white shadow-custom z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex-shrink-0">
+        <a href="index.html">
+          <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+        </a>
+      </div>
+      <nav class="hidden md:flex space-x-8 items-center">
+        <a href="index.html" class="px-3 py-2 hover:text-blue-600 font-medium">Início</a>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Financeiro</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
+            <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
+            <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
+            <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
+            <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
+          </div>
+        </div>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Comercial</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
+            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+          </div>
+        </div>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Pós-Venda</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+          </div>
+        </div>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Geral</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
+            <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
+          </div>
+        </div>
+        <a href="contato.html" class="px-3 py-2 hover:text-blue-600 font-medium">Contato</a>
+      </nav>
+      <div class="md:hidden">
+        <button id="mobile-menu-btn" class="p-2 focus:outline-none">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
+    <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Início</a>
+    <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
+    <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
+    <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
+    <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
+    <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
+    <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
+    <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+    <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
+    <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
+    <a href="contato.html" class="block px-4 py-2 hover:bg-gray-100">Contato</a>
+  </div>
+</header>
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+</script>
+
+  <main class="pt-24 max-w-4xl mx-auto py-8">
+    <h1 class='text-2xl font-semibold mb-4'>Contratos Pós-Venda</h1><p>Gestão de contratos na área de pós-venda.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teller - Calculadora de Boletos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .shadow-custom {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .nav-link {
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s ease;
+      border-radius: 0.25rem;
+    }
+    .nav-link:hover {
+      color: #2563eb;
+      background-color: #f3f4f6;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      left: 0;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      min-width: 220px;
+      z-index: 50;
+      overflow: hidden;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-btn {
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 0.25rem;
+    }
+    .dropdown-btn:hover {
+      color: #2563eb;
+      background-color: #f3f4f6;
+    }
+    .dropdown-item {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #4b5563;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    .dropdown-item:hover, .dropdown-item.active {
+      background-color: #f3f4f6;
+      color: #2563eb;
+      border-left-color: #2563eb;
+    }
+    .mobile-menu-button {
+      padding: 0.5rem;
+      color: #374151;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .mobile-menu-button:hover {
+      color: #2563eb;
+    }
+    .mobile-menu {
+      display: none;
+      background-color: white;
+    }
+    .mobile-menu-item {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #4b5563;
+      transition: all 0.2s ease;
+    }
+    .mobile-menu-item:hover, .mobile-menu-item.active {
+      background-color: #f3f4f6;
+      color: #2563eb;
+    }
+    .main-content {
+      padding-top: 6rem;
+      max-width: 56rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 6rem 2rem 2rem;
+    }
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+    .page-description {
+      font-size: 1.1rem;
+      color: #4b5563;
+      margin-bottom: 2rem;
+    }
+    .calculator-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #374151;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .form-button {
+      background-color: #2563eb;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .form-button:hover {
+      background-color: #1d4ed8;
+    }
+    .results-container {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background-color: #f8fafc;
+      border-radius: 0.5rem;
+      border-left: 4px solid #2563eb;
+      display: none;
+    }
+    .result-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .result-label {
+      font-weight: 500;
+      color: #4b5563;
+    }
+    .result-value {
+      font-weight: 600;
+      color: #111827;
+    }
+    .copy-button {
+      margin-top: 1.5rem;
+      background-color: #10b981;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      width: 100%;
+    }
+    .copy-button:hover {
+      background-color: #059669;
+    }
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 5rem 1.5rem 2rem;
+      }
+      .page-title {
+        font-size: 1.5rem;
+      }
+      .page-description {
+        font-size: 1rem;
+      }
+      .calculator-container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="fixed w-full bg-white shadow-custom z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0">
+          <a href="index.html">
+            <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+          </a>
+        </div>
+        <nav class="hidden md:flex space-x-2 items-center">
+          <a href="index.html" class="nav-link">Início</a>
+          <div class="dropdown">
+            <button class="dropdown-btn">Financeiro</button>
+            <div class="dropdown-content">
+              <a href="boleto.html" class="dropdown-item active">Boleto</a>
+              <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+              <a href="multa.html" class="dropdown-item">Multa</a>
+              <a href="trancamento.html" class="dropdown-item">Trancamento</a>
+              <a href="destrancamento.html" class="dropdown-item">Destrancamento</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="dropdown-btn">Comercial</button>
+            <div class="dropdown-content">
+              <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="dropdown-btn">Pós-Venda</button>
+            <div class="dropdown-content">
+              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="dropdown-btn">Geral</button>
+            <div class="dropdown-content">
+              <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+              <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+            </div>
+          </div>
+          <a href="contato.html" class="nav-link">Contato</a>
+        </nav>
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="mobile-menu-button">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+      <a href="index.html" class="mobile-menu-item">Início</a>
+      <a href="boleto.html" class="mobile-menu-item active">Boleto</a>
+      <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+      <a href="multa.html" class="mobile-menu-item">Multa</a>
+      <a href="trancamento.html" class="mobile-menu-item">Trancamento</a>
+      <a href="destrancamento.html" class="mobile-menu-item">Destrancamento</a>
+      <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+      <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+      <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+      <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+      <a href="contato.html" class="mobile-menu-item">Contato</a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <h1 class="page-title">Calculadora de Pagamento via Boleto</h1>
+    <p class="page-description">Calcule o valor da entrada e parcelas conforme o número de vezes selecionado.</p>
+    
+    <div class="calculator-container">
+      <form id="boleto-calculator">
+        <div class="form-group">
+          <label for="valor-total" class="form-label">Valor Total (R$)</label>
+          <input type="number" id="valor-total" class="form-input" placeholder="Digite o valor da dívida" step="0.01" min="0" required>
+        </div>
+        <div class="form-group">
+          <label for="parcelas" class="form-label">Número de Parcelas (até 10x)</label>
+          <select id="parcelas" class="form-select" required>
+            <option value="" disabled selected>Selecione a quantidade de parcelas</option>
+            <option value="1">1x</option>
+            <option value="2">2x</option>
+            <option value="3">3x</option>
+            <option value="4">4x</option>
+            <option value="5">5x</option>
+            <option value="6">6x</option>
+            <option value="7">7x</option>
+            <option value="8">8x</option>
+            <option value="9">9x</option>
+            <option value="10">10x</option>
+          </select>
+        </div>
+        <button type="submit" class="form-button">Calcular</button>
+      </form>
+      
+      <div id="results" class="results-container">
+        <h3 class="result-title">Resultado do Cálculo</h3>
+        <div class="result-item">
+          <span class="result-label">Valor Total:</span>
+          <span id="result-total" class="result-value">R$ 0,00</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Entrada:</span>
+          <span id="result-entrada" class="result-value">R$ 0,00</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Valor Parcelado:</span>
+          <span id="result-parcelado" class="result-value">R$ 0,00</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Número de Parcelas:</span>
+          <span id="result-parcelas" class="result-value">0x</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Valor de Cada Parcela:</span>
+          <span id="result-valor-parcela" class="result-value">R$ 0,00</span>
+        </div>
+        <button id="copy-button" class="copy-button">Copiar Orçamento</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      mobileMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.style.display = mobileMenu.classList.contains('hidden') ? 'none' : 'block';
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn) {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.style.display = 'none';
+        }
+      });
+      
+      mobileMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      
+      const calculatorForm = document.getElementById('boleto-calculator');
+      const resultsContainer = document.getElementById('results');
+      const copyButton = document.getElementById('copy-button');
+      
+      if (calculatorForm) {
+        calculatorForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const valorTotal = parseFloat(document.getElementById('valor-total').value);
+          const parcelas = parseInt(document.getElementById('parcelas').value);
+          
+          if (isNaN(valorTotal) || isNaN(parcelas) || valorTotal <= 0 || parcelas <= 0) {
+            alert('Por favor, preencha todos os campos corretamente.');
+            return;
+          }
+          
+          const porcentagemEntrada = parcelas <= 6 ? 0.3 : 0.25;
+          const entrada = valorTotal * porcentagemEntrada;
+          const valorParcelado = valorTotal - entrada;
+          const valorParcela = valorParcelado / parcelas;
+          
+          document.getElementById('result-total').textContent = formatCurrency(valorTotal);
+          document.getElementById('result-entrada').textContent = formatCurrency(entrada) + ` (${porcentagemEntrada * 100}%)`;
+          document.getElementById('result-parcelado').textContent = formatCurrency(valorParcelado);
+          document.getElementById('result-parcelas').textContent = parcelas + 'x';
+          document.getElementById('result-valor-parcela').textContent = formatCurrency(valorParcela);
+          
+          resultsContainer.style.display = 'block';
+        });
+      }
+      
+      if (copyButton) {
+        copyButton.addEventListener('click', function() {
+          const valorTotal = document.getElementById('result-total').textContent;
+          const entrada = document.getElementById('result-entrada').textContent;
+          const parcelado = document.getElementById('result-parcelado').textContent;
+          const numParcelas = document.getElementById('result-parcelas').textContent;
+          const valorParcela = document.getElementById('result-valor-parcela').textContent;
+          
+          const texto = `*Orçamento - Pagamento via Boleto*\n\n` +
+                        `💰 *Valor Total:* ${valorTotal}\n` +
+                        `📥 *Entrada:* ${entrada}\n` +
+                        `💳 *Valor Parcelado:* ${parcelado}\n` +
+                        `🔢 *Número de Parcelas:* ${numParcelas}\n` +
+                        `📆 *Valor de Cada Parcela:* ${valorParcela}\n\n` +
+                        `_Os valores podem ser pagos via boleto bancário._`;
+          
+          navigator.clipboard.writeText(texto).then(() => {
+            const originalText = copyButton.textContent;
+            copyButton.textContent = 'Copiado!';
+            copyButton.style.backgroundColor = '#10b981';
+            
+            setTimeout(() => {
+              copyButton.textContent = originalText;
+              copyButton.style.backgroundColor = '#10b981';
+            }, 2000);
+          }).catch(err => {
+            console.error('Erro ao copiar texto: ', err);
+            alert('Não foi possível copiar o texto. Por favor, copie manualmente.');
+          });
+        });
+      }
+      
+      function formatCurrency(value) {
+        return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
+      }
+    });
+  </script>
+</body>
+</html>

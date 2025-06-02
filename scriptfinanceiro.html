@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teller - Scriptfinanceiro</title>
+  <!-- Import Poppins from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .dropdown-menu { display: none; }
+    .dropdown:hover > .dropdown-menu { display: block; }
+    .message-bubble {
+      position: relative;
+      background: #e5efff;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .message-bubble:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 1.5rem;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: #e5efff;
+      border-bottom: 0;
+      margin-bottom: -10px;
+    }
+    .edit-area {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  
+<header class="fixed w-full bg-white shadow-custom z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex-shrink-0">
+        <a href="index.html">
+          <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+        </a>
+      </div>
+      <nav class="hidden md:flex space-x-8 items-center">
+        <a href="index.html" class="px-3 py-2 hover:text-blue-600 font-medium">Início</a>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Financeiro</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
+            <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
+            <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
+            <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
+            <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
+          </div>
+        </div>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Comercial</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
+            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+          </div>
+        </div>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Pós-Venda</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+          </div>
+        </div>
+        <div class="relative dropdown inline-block">
+          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Geral</button>
+          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
+            <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
+            <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
+          </div>
+        </div>
+        <a href="contato.html" class="px-3 py-2 hover:text-blue-600 font-medium">Contato</a>
+      </nav>
+      <div class="md:hidden">
+        <button id="mobile-menu-btn" class="p-2 focus:outline-none">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
+    <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Início</a>
+    <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
+    <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
+    <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
+    <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
+    <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
+    <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
+    <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
+    <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
+    <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
+    <a href="contato.html" class="block px-4 py-2 hover:bg-gray-100">Contato</a>
+  </div>
+</header>
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+</script>
+
+  <main class="pt-24 max-w-4xl mx-auto py-8 px-4 sm:px-6">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class='text-2xl font-semibold text-blue-800'>Scripts Financeiros</h1>
+        <p class="text-gray-600">Recados padrão para WhatsApp</p>
+      </div>
+      <button id="add-new-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+        + Adicionar Novo
+      </button>
+    </div>
+    
+    <div id="messages-container" class="bg-white rounded-lg shadow-md p-6">
+      <!-- Mensagens serão carregadas aqui -->
+    </div>
+    
+    <!-- Template para nova mensagem (hidden) -->
+    <div id="new-message-template" class="hidden">
+      <div class="message-bubble mb-6" data-id="">
+        <div class="content-area">
+          <p class="message-content"></p>
+          <div class="flex justify-end space-x-2 mt-3">
+            <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded text-sm">Editar</button>
+            <button class="copy-btn bg-blue-500 text-white px-3 py-1 rounded text-sm">Copiar</button>
+            <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded text-sm">Excluir</button>
+          </div>
+        </div>
+        <div class="edit-area">
+          <textarea class="w-full p-3 border rounded-lg mb-2" rows="4"></textarea>
+          <div class="flex justify-end space-x-2">
+            <button class="cancel-edit-btn bg-gray-500 text-white px-3 py-1 rounded text-sm">Cancelar</button>
+            <button class="save-edit-btn bg-green-500 text-white px-3 py-1 rounded text-sm">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal para adicionar nova mensagem -->
+    <div id="add-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 class="text-lg font-semibold mb-4">Adicionar Novo Recado</h3>
+        <textarea id="new-message-text" class="w-full p-3 border rounded-lg mb-4" rows="6" placeholder="Digite o texto do recado..."></textarea>
+        <div class="flex justify-end space-x-3">
+          <button id="cancel-add-btn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancelar</button>
+          <button id="confirm-add-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elementos do DOM
+      const messagesContainer = document.getElementById('messages-container');
+      const addNewBtn = document.getElementById('add-new-btn');
+      const addModal = document.getElementById('add-modal');
+      const cancelAddBtn = document.getElementById('cancel-add-btn');
+      const confirmAddBtn = document.getElementById('confirm-add-btn');
+      const newMessageText = document.getElementById('new-message-text');
+      const template = document.getElementById('new-message-template');
+      
+      // Carregar mensagens salvas
+      loadMessages();
+      
+      // Evento para adicionar nova mensagem
+      addNewBtn.addEventListener('click', () => {
+        newMessageText.value = '';
+        addModal.classList.remove('hidden');
+      });
+      
+      // Cancelar adição
+      cancelAddBtn.addEventListener('click', () => {
+        addModal.classList.add('hidden');
+      });
+      
+      // Confirmar adição
+      confirmAddBtn.addEventListener('click', () => {
+        const text = newMessageText.value.trim();
+        if (text) {
+          addNewMessage(text);
+          addModal.classList.add('hidden');
+        }
+      });
+      
+      // Função para carregar mensagens
+      function loadMessages() {
+        messagesContainer.innerHTML = '';
+        const messages = getSavedMessages();
+        
+        if (messages.length === 0) {
+          messagesContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhum recado salvo ainda.</p>';
+          return;
+        }
+        
+        messages.forEach(message => {
+          addMessageToDOM(message.id, message.text);
+        });
+      }
+      
+      // Função para adicionar nova mensagem
+      function addNewMessage(text) {
+        const messages = getSavedMessages();
+        const newId = Date.now().toString();
+        const newMessage = { id: newId, text };
+        
+        messages.push(newMessage);
+        saveMessages(messages);
+        addMessageToDOM(newId, text);
+      }
+      
+      // Função para adicionar mensagem ao DOM
+      function addMessageToDOM(id, text) {
+        if (messagesContainer.querySelector('.text-gray-500')) {
+          messagesContainer.innerHTML = '';
+        }
+        
+        const clone = template.cloneNode(true);
+        const messageElement = clone.querySelector('.message-bubble');
+        messageElement.setAttribute('data-id', id);
+        
+        const contentArea = messageElement.querySelector('.content-area');
+        const editArea = messageElement.querySelector('.edit-area');
+        const messageContent = contentArea.querySelector('.message-content');
+        const editTextarea = editArea.querySelector('textarea');
+        
+        messageContent.textContent = text;
+        editTextarea.value = text;
+        
+        // Botões
+        const editBtn = contentArea.querySelector('.edit-btn');
+        const copyBtn = contentArea.querySelector('.copy-btn');
+        const deleteBtn = contentArea.querySelector('.delete-btn');
+        const cancelEditBtn = editArea.querySelector('.cancel-edit-btn');
+        const saveEditBtn = editArea.querySelector('.save-edit-btn');
+        
+        // Eventos
+        editBtn.addEventListener('click', () => {
+          contentArea.style.display = 'none';
+          editArea.style.display = 'block';
+        });
+        
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(text);
+          alert('Recado copiado para a área de transferência!');
+        });
+        
+        deleteBtn.addEventListener('click', () => {
+          if (confirm('Tem certeza que deseja excluir este recado?')) {
+            deleteMessage(id);
+          }
+        });
+        
+        cancelEditBtn.addEventListener('click', () => {
+          editTextarea.value = text;
+          contentArea.style.display = 'block';
+          editArea.style.display = 'none';
+        });
+        
+        saveEditBtn.addEventListener('click', () => {
+          const newText = editTextarea.value.trim();
+          if (newText) {
+            updateMessage(id, newText);
+            messageContent.textContent = newText;
+            contentArea.style.display = 'block';
+            editArea.style.display = 'none';
+          }
+        });
+        
+        messagesContainer.appendChild(messageElement);
+      }
+      
+      // Funções para manipular localStorage
+      function getSavedMessages() {
+        const saved = localStorage.getItem('whatsapp_messages');
+        return saved ? JSON.parse(saved) : [];
+      }
+      
+      function saveMessages(messages) {
+        localStorage.setItem('whatsapp_messages', JSON.stringify(messages));
+      }
+      
+      function updateMessage(id, newText) {
+        const messages = getSavedMessages();
+        const index = messages.findIndex(m => m.id === id);
+        if (index !== -1) {
+          messages[index].text = newText;
+          saveMessages(messages);
+        }
+      }
+      
+      function deleteMessage(id) {
+        const messages = getSavedMessages().filter(m => m.id !== id);
+        saveMessages(messages);
+        loadMessages();
+      }
+    });
+  </script>
+</body>
+</html>
