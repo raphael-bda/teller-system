@@ -3,205 +3,385 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teller - Procfinanceiro</title>
-  <!-- Import Poppins from Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+  <title>Teller - Procedimentos Financeiros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="IMG/Teller Logo.png" type="image/png">
   <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-    .dropdown-menu { display: none; }
-    .dropdown:hover > .dropdown-menu { display: block; }
-    .procedure-item {
-      position: relative;
-      padding-left: 2rem;
-      margin-bottom: 1.5rem;
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #1c1e21;
     }
-    .procedure-item:before {
-      content: "🔹";
-      position: absolute;
-      left: 0;
+    .header-shadow { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .nav-link {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770;
+        transition: background-color 0.2s, color 0.2s; border-radius: 0.375rem; display: flex; align-items: center;
+    }
+    .nav-link:hover { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-btn {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770; background-color: transparent;
+        border: none; cursor: pointer; border-radius: 0.375rem;
+        transition: background-color 0.2s, color 0.2s; display: flex; align-items: center;
+    }
+    .dropdown-btn:hover, .dropdown-btn.active-parent { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-content {
+        display: none; position: absolute; left: 0; top: calc(100% + 5px); background-color: white;
+        border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); min-width: 240px;
+        z-index: 50; padding-top: 0.5rem; padding-bottom: 0.5rem;
+    }
+    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown-item {
+        display: block; padding: 0.75rem 1.5rem; color: #1c1e21;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .dropdown-item:hover, .dropdown-item.active { background-color: #f0f2f5; color: #1877f2; font-weight: 500; }
+    .main-content-pt { padding-top: 5rem; }
+
+    .page-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem; 
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px) { .page-card { padding: 2rem; } }
+
+    .procedure-group {
+        border-bottom: 1px solid #e5e7eb; /* Divisor entre grupos */
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .procedure-group:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
     }
     .procedure-title {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: #1e40af;
+        font-size: 1.25rem; /* text-xl */
+        font-weight: 600; /* semibold */
+        color: #1877f2; /* Azul Teller/Facebook */
+        margin-bottom: 0.75rem; /* mb-3 */
+        display: flex;
+        align-items: center;
     }
-    .procedure-details {
-      padding-left: 1rem;
-      border-left: 2px solid #e5e7eb;
+    .procedure-title svg {
+        width: 1.5rem; /* w-6 */
+        height: 1.5rem; /* h-6 */
+        margin-right: 0.5rem; /* mr-2 */
+        color: #1877f2;
     }
-    .procedure-detail {
-      margin-bottom: 0.5rem;
-      position: relative;
-      padding-left: 1rem;
+    .procedure-details ul {
+        list-style: none;
+        padding-left: 0.5rem; /* Leve indentação para os itens */
     }
-    .procedure-detail:before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      color: #6b7280;
+    .procedure-details li {
+        color: #4b5563; /* text-gray-600 */
+        margin-bottom: 0.5rem; /* mb-2 */
+        line-height: 1.6;
+        position: relative;
+        padding-left: 1.25rem; /* Espaço para o marcador */
     }
+    .procedure-details li::before {
+        content: "•"; /* Marcador de bolinha */
+        color: #1877f2; /* Cor do marcador */
+        font-weight: bold;
+        display: inline-block; 
+        position: absolute;
+        left: 0;
+        top: 0.05em; /* Ajuste vertical fino */
+    }
+    .procedure-details strong { /* Destaque para valores/prazos */
+        font-weight: 600;
+        color: #1c1e21;
+    }
+
+    .mobile-menu { background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .mobile-menu-item {
+        padding: 1rem 1.5rem; color: #1c1e21; border-bottom: 1px solid #f0f2f5; font-weight: 500;
+    }
+    .mobile-menu-item:hover, .mobile-menu-item.active { background-color: #e7f3ff; color: #1877f2; }
+    .mobile-menu-item:last-child { border-bottom: none; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  
-<header class="fixed w-full bg-white shadow-custom z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <div class="flex-shrink-0">
-        <a href="index.html">
-          <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
-        </a>
-      </div>
-      <nav class="hidden md:flex space-x-8 items-center">
-        <a href="index.html" class="px-3 py-2 hover:text-blue-600 font-medium">Início</a>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Financeiro</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-            <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-            <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-            <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-            <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-          </div>
+<body>
+  <header class="fixed w-full bg-white header-shadow z-50 h-16">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div class="flex justify-between items-center h-full">
+            <div class="flex-shrink-0">
+                <a href="index.html">
+                    <img class="h-12 sm:h-14 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+                </a>
+            </div>
+            <nav class="hidden md:flex space-x-1 items-center">
+                <a href="index.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Início
+                </a>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Financeiro
+                        <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="financeiro_dashboard.html" class="dropdown-item">Dashboard</a>
+                        <a href="boleto.html" class="dropdown-item">Boleto</a>
+                        <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+                        <a href="multa.html" class="dropdown-item">Multa</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.552-.257m-4.286 3.15A4.5 4.5 0 004 10.5v1.75A4.5 4.5 0 008.5 16.5h3A4.5 4.5 0 0016 12.25v-1.75a4.5 4.5 0 00-1.849-3.676l-.516-.344a2.5 2.5 0 00-3.206 1.08L8.433 7.418zM12 10.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path><path d="M15.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM4.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM1.155 8.019A4.502 4.502 0 014 4.5h3.5A4.502 4.502 0 0111.345 8.02l.065.043a2.5 2.5 0 013.416-1.027L16 7.5V4.5a2 2 0 00-2-2h- 상황에 따라 채워넣기"></path></svg>
+                        Comercial
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda (Comercial)</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 018.5 8H11a1 1 0 01.949.684l.57 2.285a1 1 0 01-.364 1.118l-2.423 1.818a1 1 0 00-.364 1.118l.57 2.285A1 1 0 018.949 18H6.153a1 1 0 01-.986-.836l-.74-4.435A1 1 0 013.5 12H2a1 1 0 01-1-1V4a1 1 0 011-1zm14 0a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 0118.5 8H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818A1 1 0 0018.5 14H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818a1 1 0 00.949.684h2.153a1 1 0 00.986-.836l.74-4.435A1 1 0 0018.5 12H17a1 1 0 00-1-1V4a1 1 0 001-1z"></path></svg>
+                        Pós-Venda
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn active-parent">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                        Geral
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="procfinanceiro.html" class="dropdown-item active">Procedimentos</a>
+                        <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+                    </div>
+                </div>
+                <a href="contato.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                    Contato
+                </a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Comercial</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Pós-Venda</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Geral</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-            <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-          </div>
-        </div>
-        <a href="contato.html" class="px-3 py-2 hover:text-blue-600 font-medium">Contato</a>
-      </nav>
-      <div class="md:hidden">
-        <button id="mobile-menu-btn" class="p-2 focus:outline-none">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-      </div>
     </div>
-  </div>
-  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
-    <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Início</a>
-    <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-    <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-    <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-    <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-    <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-    <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-    <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-    <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-    <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-    <a href="contato.html" class="block px-4 py-2 hover:bg-gray-100">Contato</a>
-  </div>
-</header>
-<script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-</script>
+    <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+        <a href="index.html" class="mobile-menu-item">Início</a>
+        <a href="financeiro_dashboard.html" class="mobile-menu-item">Dashboard Financeiro</a>
+        <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+        <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+        <a href="multa.html" class="mobile-menu-item">Multa</a>
+        <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+        <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+        <a href="procfinanceiro.html" class="mobile-menu-item active">Procedimentos</a>
+        <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+        <a href="contato.html" class="mobile-menu-item">Contato</a>
+    </div>
+  </header>
 
-  <main class="pt-24 max-w-4xl mx-auto py-8 px-4 sm:px-6">
-    <h1 class='text-2xl font-semibold mb-6 text-blue-800'>Procedimentos Financeiros</h1>
-    <p class="mb-8 text-gray-600">Documentação e instruções sobre os principais procedimentos financeiros da instituição.</p>
+  <main class="main-content-pt">
+    <div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-gray-800">Procedimentos Financeiros</h1>
+            <p class="mt-2 text-lg text-gray-600">Documentação e instruções sobre os principais procedimentos financeiros da instituição.</p>
+        </div>
     
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <div class="procedure-item">
-        <div class="procedure-title">1. Desistência e Cancelamento</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Cancelamento até 10 dias antes do início: devolução de 80% da matrícula</div>
-          <div class="procedure-detail">20% retido como multa compensatória</div>
-          <div class="procedure-detail">Após o início das aulas: multa de 20% sobre as mensalidades vincendas</div>
-          <div class="procedure-detail">Mensalidades já pagas não são devolvidas</div>
+        <div class="page-card">
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25c-5.376 0-9.75 4.374-9.75 9.75s4.374 9.75 9.75 9.75 9.75-4.374 9.75-9.75S17.376 2.25 12 2.25Zm0 1.5c4.557 0 8.25 3.693 8.25 8.25s-3.693 8.25-8.25 8.25S3.75 16.557 3.75 12 7.443 3.75 12 3.75Zm-1.03 5.53a.75.75 0 0 0-1.061 1.06L11.19 12l-1.28 1.16a.75.75 0 0 0 1.06 1.061l1.75-1.591a.75.75 0 0 0 0-1.06L10.97 9.28ZM15 12a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h3A.75.75 0 0 1 15 12Z"></path></svg>
+                Desistência e Cancelamento
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Cancelamento até <strong>10 dias antes</strong> do início das aulas: devolução de <strong>80%</strong> do valor da matrícula.</li>
+                <li><strong>20%</strong> do valor da matrícula é retido como multa compensatória em caso de cancelamento prévio.</li>
+                <li>Após o início das aulas: multa de <strong>20%</strong> sobre as mensalidades vincendas (a vencer).</li>
+                <li>Mensalidades já pagas (vencidas e cursadas) <strong>não são devolvidas</strong>.</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25c-5.376 0-9.75 4.374-9.75 9.75s4.374 9.75 9.75 9.75 9.75-4.374 9.75-9.75S17.376 2.25 12 2.25Zm0 1.5c4.557 0 8.25 3.693 8.25 8.25s-3.693 8.25-8.25 8.25S3.75 16.557 3.75 12 7.443 3.75 12 3.75Zm-2.25 4.5a.75.75 0 0 0-1.5 0v6a.75.75 0 0 0 1.5 0V8.25Zm4.5 0a.75.75 0 0 0-1.5 0v6a.75.75 0 0 0 1.5 0V8.25Z"></path></svg>
+                Trancamento
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Permitido após a conclusão de, no mínimo, <strong>um módulo completo</strong>.</li>
+                <li>Aluno deve estar <strong>adimplente</strong> ou firmar <strong>confissão de dívida</strong> dos valores pendentes.</li>
+                <li>Prazo máximo de trancamento: <strong>6 meses</strong>.</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.25-1.5a.75.75 0 0 0-1.5 0v5.25a.75.75 0 0 0 1.5 0V10.5Zm2.25-.75a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0V10.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd"></path></svg>
+                Inadimplência
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Multa de <strong>2%</strong>, juros de <strong>1% ao mês</strong> (pro rata die).</li>
+                <li>Correção monetária pelo <strong>IGP-M</strong> (pro rata die).</li>
+                <li>Após <strong>60 dias</strong> de inadimplência: antecipação de todas as parcelas vincendas.</li>
+                <li>Após <strong>90 dias</strong> de inadimplência: possibilidade de rescisão contratual.</li>
+                <li>Ações de cobrança: protesto, inclusão em órgãos de proteção ao crédito (SPC/Serasa), cobrança judicial (acréscimo de <strong>20%</strong> de honorários advocatícios).</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a2.25 2.25 0 0 0-2.25-2.25h-3a2.25 2.25 0 0 0-2.25 2.25H6.75v2.25H6a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 .75.75h12a.75.75 0 0 0 .75-.75v-4.5a.75.75 0 0 0-.75-.75h-.75V9.75h-1.5Zm-3-1.5h3V12H9.75V8.25a1.5 1.5 0 0 1 1.5-1.5Z" clip-rule="evenodd"></path></svg>
+                Reposição de Aulas
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Até <strong>3 reposições</strong> gratuitas durante o curso.</li>
+                <li>Reposições extras: <strong>R$ 250,00</strong> por aula.</li>
+                <li>Falta em reposição agendada: cobrança de novo valor de <strong>R$ 250,00</strong> para reagendamento.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM12.75 12.75a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 .75-.75Z" clip-rule="evenodd"></path></svg>
+                Prova Substitutiva
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li><strong>Gratuita</strong> na primeira solicitação.</li>
+                <li>Demais casos: podem estar sujeitos à interpretação contratual para cobrança (verificar contrato específico).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M16.5 2.25a.75.75 0 0 1 .75.75v11.69l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3a.75.75 0 0 0 1.06 0l3-3a.75.75 0 0 0-1.06-1.06l-1.72 1.72V3a.75.75 0 0 0-.75-.75h-1.5ZM4.5 6a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6A.75.75 0 0 1 4.5 6Zm0 4a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6A.75.75 0 0 1 4.5 10Zm0 4a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6A.75.75 0 0 1 4.5 14Z" clip-rule="evenodd"></path></svg>
+                Disciplinas de Dependência (DP)
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Valor por DP: <strong>R$ 250,00</strong>.</li>
+                <li>Podem ser cursadas concomitantemente ao semestre regular ou ao final do curso.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.474 2.032a.75.75 0 0 1 .635.052l8.25 4.5a.75.75 0 0 1-.061 1.353l-8.25 4.5a.75.75 0 0 1-1.198-.602V3.034a.75.75 0 0 1 .624-1.002ZM6.623 4.202l.093.05a.75.75 0 0 1-.002 1.356L3.375 7.5h-.75A2.25 2.25 0 0 0 0 9.75v7.5A2.25 2.25 0 0 0 2.25 19.5H18a2.25 2.25 0 0 0 2.25-2.25V16.5a.75.75 0 0 1 1.5 0v.75a3.75 3.75 0 0 1-3.75 3.75H2.25A3.75 3.75 0 0 1-1.5 17.25v-7.5A3.75 3.75 0 0 1 2.25 6H3l3.563-1.942Z" clip-rule="evenodd"></path></svg>
+                Entregas Fora do Prazo
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Artigo acadêmico ou estágio entregue fora do prazo: <strong>R$ 450,00</strong>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M15.97 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H7.5a.75.75 0 0 1 0-1.5h11.69l-3.22-3.22a.75.75 0 0 1 0-1.06Zm-7.94 9a.75.75 0 0 1 0 1.06l-3.22 3.22H16.5a.75.75 0 0 1 0 1.5H4.81l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path></svg>
+                Transferência ou Reinício
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Transferência de curso: <strong>R$ 450,00</strong>.</li>
+                <li>Reinício com disciplinas vencidas: taxa de <strong>20%</strong> por disciplina (mínimo 2 disciplinas).</li>
+                <li>Reopção com disciplinas já finalizadas: taxa de <strong>40%</strong> por disciplina (mínimo 2 disciplinas).</li>
+                <li>Limite de reinício do curso: <strong>3 vezes</strong>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="procedure-group">
+            <h2 class="procedure-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071 1.052A6.75 6.75 0 0 0 18.75 12a6.75 6.75 0 0 0-6.86-6.662.75.75 0 0 0-.671 1.345A5.25 5.25 0 0 1 17.25 12a5.25 5.25 0 0 1-5.082 5.238.75.75 0 0 0-.67 1.345 6.75 6.75 0 0 0 6.86-6.662A6.75 6.75 0 0 0 12.963 2.286ZM10.754 6.26A.75.75 0 0 0 9.682 5.025A6.75 6.75 0 0 0 3 11.25a6.75 6.75 0 0 0 6.673 6.852.75.75 0 0 0 1.043-1.074A5.25 5.25 0 0 1 4.5 11.25a5.25 5.25 0 0 1 5.232-5.056.75.75 0 0 0 1.022-.934Z" clip-rule="evenodd"></path></svg>
+                Indicação
+            </h2>
+            <div class="procedure-details">
+              <ul>
+                <li>Indicação com matrícula efetivada em até <strong>6 meses</strong>: <strong>10% de desconto</strong> em todas as parcelas para o indicador.</li>
+                <li>Indicação com matrícula efetivada após <strong>6 meses</strong>: <strong>25% de desconto</strong> em uma única parcela para o indicador.</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">2. Trancamento</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Permitido após conclusão de um módulo</div>
-          <div class="procedure-detail">Necessário estar adimplente ou firmar confissão de dívida</div>
-          <div class="procedure-detail">Limite máximo: 2 anos e 6 meses</div>
-        </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">3. Inadimplência</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Multa de 2%, juros de 1% ao mês (pro rata die)</div>
-          <div class="procedure-detail">Correção monetária pelo IGP-M (pro rata die)</div>
-          <div class="procedure-detail">Após 60 dias: antecipação das parcelas vincendas</div>
-          <div class="procedure-detail">Após 90 dias: rescisão contratual</div>
-          <div class="procedure-detail">Ações possíveis: protesto, SPC/Serasa, cobrança judicial com 20% honorários</div>
-        </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">4. Reposição de Aulas</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Até 3 reposições gratuitas</div>
-          <div class="procedure-detail">Reposições extras: R$ 250,00 por aula</div>
-          <div class="procedure-detail">Falta na reposição agendada: novo valor de R$ 250,00</div>
-        </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">5. Prova Substitutiva</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Gratuita na primeira solicitação</div>
-          <div class="procedure-detail">Demais casos podem ter interpretação contratual para cobrança</div>
-        </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">6. Disciplinas de Dependência (DP)</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Valor por DP: R$ 250,00</div>
-          <div class="procedure-detail">Podem ser cursadas junto ao semestre ou ao final do curso</div>
-        </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">7. Entregas Fora do Prazo</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Artigo acadêmico ou estágio fora do prazo: R$ 450,00</div>
-        </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">8. Transferência ou Reinício</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Transferência de curso: R$ 450,00</div>
-          <div class="procedure-detail">Reinício com disciplinas vencidas: taxa de 20% por disciplina (mínimo 2)</div>
-          <div class="procedure-detail">Reopção com disciplinas finalizadas: taxa de 40% por disciplina (mínimo 2)</div>
-          <div class="procedure-detail">Limite de reinício: 3 vezes</div>
-        </div>
-      </div>
-      
-      <div class="procedure-item">
-        <div class="procedure-title">9. Indicação</div>
-        <div class="procedure-details">
-          <div class="procedure-detail">Indicação com matrícula até 6 meses: 10% de desconto em todas as parcelas</div>
-          <div class="procedure-detail">Indicação após 6 meses: 25% de desconto em uma única parcela</div>
-        </div>
-      </div>
     </div>
   </main>
+
+  <footer class="bg-gray-800 text-gray-300 mt-16">
+    <div class="max-w-screen-xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+        <p>© <span id="currentYear"></span> Teller. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- Início Script Menu Mobile e Footer ---
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); mobileMenu.classList.toggle('hidden'); });
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+        }
+      });
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+      // --- Fim Script Menu Mobile e Footer ---
+
+      // Lógica para ativar o dropdown pai no menu
+      const currentPath = window.location.pathname.split("/").pop();
+      const dropdowns = document.querySelectorAll('header .dropdown');
+      dropdowns.forEach(dropdown => {
+          const items = dropdown.querySelectorAll('.dropdown-item');
+          let parentIsActive = false;
+          items.forEach(item => {
+              if (item.getAttribute('href') === currentPath) {
+                  item.classList.add('active');
+                  parentIsActive = true;
+              } else {
+                  item.classList.remove('active');
+              }
+          });
+          const btn = dropdown.querySelector('.dropdown-btn');
+          if (parentIsActive) {
+              btn.classList.add('active-parent');
+          } else {
+              btn.classList.remove('active-parent');
+          }
+      });
+       // Se nenhum item de dropdown está ativo, verifica se o link "Início" deve estar ativo
+      if (!document.querySelector('header .dropdown-btn.active-parent')) {
+          const inicioLink = document.querySelector('header a.nav-link[href="index.html"]');
+          if (currentPath === "index.html" || currentPath === "") {
+              if(inicioLink) inicioLink.classList.add('active');
+          } else {
+               if(inicioLink) inicioLink.classList.remove('active');
+          }
+      } else {
+           const inicioLink = document.querySelector('header a.nav-link[href="index.html"]');
+           if(inicioLink) inicioLink.classList.remove('active');
+      }
+    });
+  </script>
 </body>
 </html>

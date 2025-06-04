@@ -6,538 +6,886 @@
   <title>Dashboard Financeiro - Teller</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" href="IMG/Teller Logo.png" type="image/png">
   <style>
-    /* Estilos personalizados */
     body { 
       font-family: 'Poppins', sans-serif;
-      background-color: #f8fafc;
+      background-color: #f0f2f5;
+      color: #1c1e21;
     }
-    .shadow-custom { 
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    .header-shadow { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .nav-link {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770;
+        transition: background-color 0.2s, color 0.2s; border-radius: 0.375rem; display: flex; align-items: center;
     }
+    .nav-link:hover, .nav-link.active { background-color: #e7f3ff; color: #1877f2; font-weight: 600; }
+    .dropdown-btn {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770; background-color: transparent;
+        border: none; cursor: pointer; border-radius: 0.375rem;
+        transition: background-color 0.2s, color 0.2s; display: flex; align-items: center;
+    }
+    .dropdown-btn:hover, .dropdown-btn.active-parent { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-content {
+        display: none; position: absolute; left: 0; top: calc(100% + 5px); background-color: white;
+        border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); min-width: 240px;
+        z-index: 50; padding-top: 0.5rem; padding-bottom: 0.5rem;
+    }
+    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown-item {
+        display: block; padding: 0.75rem 1.5rem; color: #1c1e21;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .dropdown-item:hover, .dropdown-item.active { background-color: #f0f2f5; color: #1877f2; font-weight: 500; }
+    .main-content-pt { padding-top: 5rem; }
+
     .dashboard-card {
       background-color: white;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    .input-field {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #e2e8f0;
       border-radius: 0.5rem;
-      transition: all 0.2s;
+      padding: 1.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
-    .input-field:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151; }
+    .form-input {
+      width: 100%; padding: 0.75rem 1rem; border: 1px solid #ccd0d5;
+      border-radius: 0.375rem; transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #f5f6f7;
     }
-    .readonly-field {
-      background-color: #f8fafc;
-      color: #64748b;
+    .form-input:focus {
+      outline: none; border-color: #1877f2;
+      box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+      background-color: white;
     }
+    .form-input.readonly-field { background-color: #e9ecef; cursor: not-allowed; }
+    
     .chart-container {
       position: relative;
-      height: 300px;
+      height: 350px;
       margin-top: 2rem;
+      margin-bottom: 1rem;
     }
+    .chart-container-medium {
+        position: relative;
+        height: 320px;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .summary-card {
+      background-color: #e7f3ff;
+      border-radius: 0.5rem;
+      padding: 1rem 1.5rem;
+    }
+    .summary-card h3 { color: #1d3c6e; font-weight: 500; }
+    .summary-card p { color: #1877f2; font-weight: 700; }
+    
+    .fullscreen-btn {
+        background-color: #1877f2; color: white; padding: 0.625rem 1.25rem;
+        border-radius: 0.375rem; font-weight: 500; transition: background-color 0.2s;
+        display: inline-flex; align-items: center;
+    }
+    .fullscreen-btn:hover { background-color: #166fe5; }
+    .fullscreen-btn svg { width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; }
+
     .fullscreen-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      z-index: 1000;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: white; z-index: 1000; 
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      padding: 1rem;
+      box-sizing: border-box;
+      overflow-y: auto; 
     }
-    .fullscreen-chart-container {
-      position: relative;
-      width: 80%;
-      height: 60%;
-      min-height: 400px;
+
+    .close-fullscreen-btn {
+      position: absolute; 
+      top: 1rem; 
+      right: 1rem; 
+      background: #e4e6eb; color: #1c1e21; border: none; border-radius: 50%;
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-weight: bold; font-size: 1.25rem; line-height: 1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background-color 0.2s;
     }
-    .fullscreen-summary {
-      display: flex;
-      gap: 2rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
+    .close-fullscreen-btn:hover { background-color: #d8dbdf; }
+
+    .fullscreen-content-wrapper {
+        display: flex;
+        flex-direction: column; 
+        width: 100%;
+        flex-grow: 1; 
+        overflow: hidden; 
+        gap: 1.5rem; 
     }
-    .fullscreen-summary-item {
-      text-align: center;
-      padding: 1.5rem 2.5rem;
-      border-radius: 0.5rem;
-      min-width: 250px;
-      flex: 1;
-    }
-    .fullscreen-summary-title {
-      font-size: 1.5rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-    .fullscreen-summary-value {
-      font-size: 2rem;
-      font-weight: 700;
-    }
-    .close-fullscreen {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: #ef4444;
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 1rem;
-    }
-    
-    /* Menu dropdown */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      left: 0;
-      background-color: white;
-      border-radius: 0.5rem;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      min-width: 220px;
-      z-index: 50;
-      overflow: hidden;
-      animation: fadeIn 0.2s ease-out;
-    }
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-    .dropdown-btn {
-      padding: 0.5rem 1rem;
-      font-weight: 500;
-      color: #374151;
-      transition: all 0.3s ease;
-      background: none;
-      border: none;
-      cursor: pointer;
-      border-radius: 0.25rem;
-    }
-    .dropdown-btn:hover {
-      color: #2563eb;
-      background-color: #f3f4f6;
-    }
-    .dropdown-item {
-      display: block;
-      padding: 0.75rem 1.5rem;
-      color: #4b5563;
-      transition: all 0.2s ease;
-      border-left: 3px solid transparent;
-    }
-    .dropdown-item:hover, .dropdown-item.active {
-      background-color: #f3f4f6;
-      color: #2563eb;
-      border-left-color: #2563eb;
-    }
-    .nav-link {
-      padding: 0.5rem 1rem;
-      font-weight: 500;
-      color: #374151;
-      transition: all 0.3s ease;
-      border-radius: 0.25rem;
-    }
-    .nav-link:hover {
-      color: #2563eb;
-      background-color: #f3f4f6;
-    }
-    .mobile-menu-button {
-      padding: 0.5rem;
-      color: #374151;
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .mobile-menu-button:hover {
-      color: #2563eb;
-    }
-    .mobile-menu {
-      display: none;
-      background-color: white;
-      animation: slideDown 0.3s ease-out;
-    }
-    .mobile-menu-item {
-      display: block;
-      padding: 0.75rem 1.5rem;
-      color: #4b5563;
-      transition: all 0.2s ease;
-      border-left: 3px solid transparent;
-    }
-    .mobile-menu-item:hover, .mobile-menu-item.active {
-      background-color: #f3f4f6;
-      color: #2563eb;
-      border-left-color: #2563eb;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Cores para o item de percentual */
-    .bg-indigo-50 { background-color: #eef2ff; }
-    .text-indigo-800 { color: #3730a3; }
-    .text-indigo-600 { color: #4f46e5; }
-    
-    /* Responsividade */
-    @media (max-width: 768px) {
-      .logo {
-        height: 60px;
-      }
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-      .fullscreen-summary {
+
+    .fullscreen-column {
+        display: flex;
         flex-direction: column;
-        gap: 1rem;
+        align-items: center;
+    }
+     #fullscreen-column-tertiary {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .section-header-fullscreen {
         width: 100%;
-      }
-      .fullscreen-summary-item {
-        min-width: auto;
-        padding: 1rem 1.5rem;
-        width: 100%;
-      }
-      .fullscreen-chart-container {
-        width: 95%;
-        height: 50%;
-        min-height: 300px;
-      }
+        text-align: center;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem; 
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .fullscreen-chart-wrapper {
+      width: 90%; max-width: 700px; height: 45vh; max-height: 350px; margin-bottom: 1rem;
+    }
+    
+    .fullscreen-summary-grid, .fullscreen-nps-grid {
+      width: 90%; max-width: 800px;
+      margin-bottom: 1.5rem; 
+      display: grid; 
+      gap: 1rem;
+    }
+    .fullscreen-summary-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .fullscreen-nps-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+    .fullscreen-summary-item {
+      text-align: center; padding: 1rem; border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .fullscreen-summary-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; }
+    .fullscreen-summary-value { font-size: 1.5rem; font-weight: 700; }
+
+    @media (orientation: landscape) and (min-width: 1200px) {
+        .fullscreen-content-wrapper {
+            flex-direction: row; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            gap: 1.5rem;
+            height: calc(100% - 10px); 
+        }
+
+        .fullscreen-column, #fullscreen-column-tertiary {
+            flex-grow: 1;
+            flex-shrink: 1;
+            overflow-y: auto; 
+            height: 100%; 
+            padding: 0 0.5rem 1rem 0.5rem; 
+        }
+        
+        #fullscreen-column-main { flex-basis: 33%; }
+        #fullscreen-column-secondary { flex-basis: 33%; }
+        #fullscreen-column-tertiary { flex-basis: 32%; }
+        
+        .fullscreen-column .fullscreen-chart-wrapper,
+        #fullscreen-column-tertiary .fullscreen-chart-wrapper {
+          width: 95%; 
+          max-width: none; 
+          height: auto; 
+          min-height: 220px;
+          max-height: 280px;
+          flex-shrink: 0; 
+          margin-bottom: 0.75rem;
+        }
+
+        .fullscreen-column .fullscreen-summary-grid, 
+        .fullscreen-column .fullscreen-nps-grid,
+        #fullscreen-column-tertiary .fullscreen-summary-grid {
+            width: 100%;
+            max-width: none;
+            margin-top: 0.25rem; 
+            margin-bottom: 1rem; 
+        }
+        
+        .fullscreen-column .section-header-fullscreen,
+        #fullscreen-column-tertiary .section-header-fullscreen {
+            margin-bottom: 0.5rem; 
+            font-size: 1.25rem;
+        }
+    }
+    @media (orientation: landscape) and (min-width: 992px) and (max-width: 1199px) {
+        .fullscreen-content-wrapper {
+            flex-direction: row; 
+            flex-wrap: wrap; 
+            justify-content: space-around;
+            gap: 1.5rem;
+        }
+        .fullscreen-column, #fullscreen-column-tertiary {
+            flex-basis: calc(50% - 1rem); 
+            height: auto; 
+            min-height: 45vh; 
+        }
+    }
+
+
+    @media (orientation: landscape) and (max-width: 991px) { 
+        .fullscreen-content-wrapper {
+            gap: 1rem;
+        }
+         .fullscreen-chart-wrapper { height: 45vh; max-height: 300px; }
+    }
+
+
+    .mobile-menu { background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .mobile-menu-item {
+        padding: 1rem 1.5rem; color: #1c1e21; border-bottom: 1px solid #f0f2f5; font-weight: 500;
+    }
+    .mobile-menu-item:hover, .mobile-menu-item.active { background-color: #e7f3ff; color: #1877f2; }
+    .mobile-menu-item:last-child { border-bottom: none; }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e5e7eb;
     }
   </style>
 </head>
-<body class="text-gray-800">
-  <!-- Header -->
-  <header class="fixed w-full bg-white shadow-custom z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex-shrink-0">
-          <a href="index.html">
-            <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
-          </a>
+<body>
+  <header class="fixed w-full bg-white header-shadow z-50 h-16">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div class="flex justify-between items-center h-full">
+            <div class="flex-shrink-0">
+                <a href="index.html">
+                    <img class="h-12 sm:h-14 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+                </a>
+            </div>
+            <nav class="hidden md:flex space-x-1 items-center">
+                <a href="index.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Início
+                </a>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn active-parent">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Financeiro
+                        <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="financeiro_dashboard.html" class="dropdown-item active">Dashboard</a>
+                        <a href="boleto.html" class="dropdown-item">Boleto</a>
+                        <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+                        <a href="multa.html" class="dropdown-item">Multa</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <!-- ÍCONE COMERCIAL CORRIGIDO -->
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v1H2.5A1.5 1.5 0 001 6.5V16a2 2 0 002 2h14a2 2 0 002-2V6.5A1.5 1.5 0 0017.5 5H16V4a2 2 0 00-2-2H6zm4 2h4v1H4V4h2zm-2 4v2h2V8H8zm4 0v2h2V8h-2z" clip-rule="evenodd"></path>
+                        </svg>
+                        Comercial
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda (Comercial)</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 018.5 8H11a1 1 0 01.949.684l.57 2.285a1 1 0 01-.364 1.118l-2.423 1.818a1 1 0 00-.364 1.118l.57 2.285A1 1 0 018.949 18H6.153a1 1 0 01-.986-.836l-.74-4.435A1 1 0 013.5 12H2a1 1 0 01-1-1V4a1 1 0 011-1zm14 0a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 0118.5 8H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818A1 1 0 0018.5 14H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818a1 1 0 00.949.684h2.153a1 1 0 00.986-.836l.74-4.435A1 1 0 0018.5 12H17a1 1 0 00-1-1V4a1 1 0 001-1z"></path></svg>
+                        Pós-Venda
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                        Geral
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+                        <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+                    </div>
+                </div>
+                <a href="contato.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                    Contato
+                </a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
         </div>
-        
-        <!-- Navegação Desktop -->
-        <nav class="hidden md:flex space-x-2 items-center">
-          <a href="index.html" class="nav-link">Início</a>
-          
-          <div class="dropdown">
-            <button class="dropdown-btn">Financeiro</button>
-            <div class="dropdown-content">
-              <a href="financeiro_dashboard.html" class="dropdown-item active">Dashboard</a>
-              <a href="boleto.html" class="dropdown-item">Boleto</a>
-              <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
-              <a href="multa.html" class="dropdown-item">Multa</a>
-              <a href="trancamento.html" class="dropdown-item">Trancamento</a>
-              <a href="destrancamento.html" class="dropdown-item">Destrancamento</a>
-            </div>
-          </div>
-          
-          <div class="dropdown">
-            <button class="dropdown-btn">Comercial</button>
-            <div class="dropdown-content">
-              <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
-              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
-            </div>
-          </div>
-          
-          <div class="dropdown">
-            <button class="dropdown-btn">Pós-Venda</button>
-            <div class="dropdown-content">
-              <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
-            </div>
-          </div>
-          
-          <div class="dropdown">
-            <button class="dropdown-btn">Geral</button>
-            <div class="dropdown-content">
-              <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
-              <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
-            </div>
-          </div>
-          
-          <a href="contato.html" class="nav-link">Contato</a>
-        </nav>
-        
-        <!-- Botão Menu Mobile -->
-        <div class="md:hidden">
-          <button id="mobile-menu-btn" class="mobile-menu-button">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-        </div>
-      </div>
     </div>
-    
-    <!-- Menu Mobile -->
     <div id="mobile-menu" class="mobile-menu md:hidden hidden">
-      <a href="index.html" class="mobile-menu-item">Início</a>
-      <a href="financeiro_dashboard.html" class="mobile-menu-item active">Dashboard</a>
-      <a href="boleto.html" class="mobile-menu-item">Boleto</a>
-      <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
-      <a href="multa.html" class="mobile-menu-item">Multa</a>
-      <a href="trancamento.html" class="mobile-menu-item">Trancamento</a>
-      <a href="destrancamento.html" class="mobile-menu-item">Destrancamento</a>
-      <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
-      <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
-      <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
-      <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
-      <a href="contato.html" class="mobile-menu-item">Contato</a>
+        <a href="index.html" class="mobile-menu-item">Início</a>
+        <a href="financeiro_dashboard.html" class="mobile-menu-item active">Dashboard Financeiro</a>
+        <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+        <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+        <a href="multa.html" class="mobile-menu-item">Multa</a>
+        <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+        <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+        <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+        <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+        <a href="contato.html" class="mobile-menu-item">Contato</a>
     </div>
   </header>
 
-  <!-- Conteúdo Principal -->
-  <main class="pt-24 pb-8 px-4 max-w-6xl mx-auto">
-    <div class="dashboard-card">
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Dashboard Financeiro</h1>
-        <button id="fullscreen-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-          Modo Apresentação
-        </button>
-      </div>
+  <main class="main-content-pt">
+    <div class="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="dashboard-card">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <h1 class="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Dashboard Financeiro</h1>
+                <button id="fullscreen-btn" class="fullscreen-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 0 1 1-1h4a1 1 0 0 1 0 2H5v2a1 1 0 1 1-2 0V4Zm12 0a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V5h-2a1 1 0 1 1 0-2h4ZM3 16a1 1 0 0 1 1 1h2a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1v-4a1 1 0 1 1 2 0v2Zm13-1a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd"></path></svg>
+                    Modo Apresentação
+                </button>
+            </div>
+            
+            <h2 class="section-title mt-4">Meta Financeiro D30</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <label for="inputMetaD30" class="form-label">Meta Financeira (R$)</label>
+                    <input id="inputMetaD30" type="number" class="form-input" placeholder="Ex: 50000.00" step="0.01" />
+                </div>
+                <div>
+                    <label for="inputRecebidoD30" class="form-label">Valor Recebido (R$)</label>
+                    <input id="inputRecebidoD30" type="number" class="form-input" placeholder="Ex: 35000.00" step="0.01" />
+                </div>
+                <div>
+                    <label for="inputPercentD30" class="form-label">Percentual Alcançado</label>
+                    <input id="inputPercentD30" type="text" class="form-input readonly-field" readonly />
+                </div>
+            </div>
       
-      <!-- Cards de Métricas -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Meta (R$)</label>
-          <input id="inputMeta" type="number" class="input-field" placeholder="Digite a meta" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Recebido (R$)</label>
-          <input id="inputRecebido" type="number" class="input-field" placeholder="Digite o valor recebido" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Percentual Alcançado</label>
-          <input id="inputPercent" type="text" class="input-field readonly-field" readonly />
-        </div>
-      </div>
+            <div class="chart-container">
+                <canvas id="chartFinanceiroD30"></canvas>
+            </div>
       
-      <!-- Gráfico -->
-      <div class="chart-container">
-        <canvas id="chartFinanceiro"></canvas>
-      </div>
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="summary-card">
+                    <h3 class="text-lg">Meta Total Definida (D30)</h3>
+                    <p id="metaTotalD30" class="text-3xl">R$ 0,00</p>
+                </div>
+                <div class="summary-card" style="background-color: #e6fffa;">
+                    <h3 class="text-lg" style="color: #234e52;">Recebido Total (D30)</h3>
+                    <p id="recebidoTotalD30" class="text-3xl" style="color: #2f855a;">R$ 0,00</p>
+                </div>
+            </div>
+
+            <h2 class="section-title mt-10">NPS do Setor</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                <div>
+                    <label for="inputNPSPromotores" class="form-label">Nº Promotores</label>
+                    <input id="inputNPSPromotores" type="number" class="form-input" placeholder="Ex: 70" step="1" />
+                </div>
+                <div>
+                    <label for="inputNPSNeutros" class="form-label">Nº Neutros</label>
+                    <input id="inputNPSNeutros" type="number" class="form-input" placeholder="Ex: 20" step="1" />
+                </div>
+                <div>
+                    <label for="inputNPSDetratores" class="form-label">Nº Detratores</label>
+                    <input id="inputNPSDetratores" type="number" class="form-input" placeholder="Ex: 10" step="1" />
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                 <div class="summary-card" style="background-color: #FEFCBF;">
+                    <h3 class="text-base" style="color: #744210;">Total Respondentes</h3>
+                    <p id="npsTotalRespondentes" class="text-2xl" style="color: #B7791F;">0</p>
+                </div>
+                <div class="summary-card" style="background-color: #E6FFFA;">
+                    <h3 class="text-base" style="color: #234E52;">Promotores</h3>
+                    <p id="npsPercentPromotores" class="text-2xl" style="color: #2F855A;">0% (0)</p>
+                </div>
+                <div class="summary-card" style="background-color: #FFF5F7;">
+                    <h3 class="text-base" style="color: #742A2A;">Detratores</h3>
+                    <p id="npsPercentDetratores" class="text-2xl" style="color: #C53030;">0% (0)</p>
+                </div>
+                 <div class="summary-card">
+                    <h3 class="text-base">NPS Final</h3>
+                    <p id="npsResultado" class="text-2xl font-bold">0%</p>
+                </div>
+            </div>
+
+            <h2 class="section-title mt-10">Recuperação (> 30 dias)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label for="inputRecuperadoMais30" class="form-label">Valor Recuperado (>30d) (R$)</label>
+                    <input id="inputRecuperadoMais30" type="number" class="form-input" placeholder="Ex: 7000.00" step="0.01" />
+                </div>
+                <div class="summary-card" style="background-color: #e6fffa;">
+                    <h3 class="text-lg" style="color: #234e52;">Total Recuperado (>30d)</h3>
+                    <p id="recuperadoTotalMais30" class="text-3xl" style="color: #2f855a;">R$ 0,00</p>
+                </div>
+            </div>
+            
+            <h2 class="section-title mt-10">Meta Anual</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <label for="inputMetaAnual" class="form-label">Meta Anual (R$)</label>
+                    <input id="inputMetaAnual" type="number" class="form-input" placeholder="Ex: 600000.00" step="0.01" />
+                </div>
+                <div>
+                    <label for="inputRecebidoAnual" class="form-label">Recebido Anual (R$)</label>
+                    <input id="inputRecebidoAnual" type="number" class="form-input" placeholder="Ex: 450000.00" step="0.01" />
+                </div>
+                <div>
+                    <label for="inputPercentAnual" class="form-label">Percentual Alcançado (Anual)</label>
+                    <input id="inputPercentAnual" type="text" class="form-input readonly-field" readonly />
+                </div>
+            </div>
       
-      <!-- Resumo -->
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-blue-50 p-4 rounded-lg">
-          <h3 class="font-medium text-blue-800">Meta Total</h3>
-          <p id="metaTotal" class="text-2xl font-bold text-blue-600">R$ 0,00</p>
+            <div class="chart-container-medium">
+                <canvas id="chartMetaAnual"></canvas>
+            </div>
+      
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="summary-card">
+                    <h3 class="text-lg">Meta Anual Definida</h3>
+                    <p id="metaTotalAnual" class="text-3xl">R$ 0,00</p>
+                </div>
+                <div class="summary-card" style="background-color: #e6fffa;">
+                    <h3 class="text-lg" style="color: #234e52;">Recebido Anual Total</h3>
+                    <p id="recebidoTotalAnual" class="text-3xl" style="color: #2f855a;">R$ 0,00</p>
+                </div>
+            </div>
         </div>
-        <div class="bg-green-50 p-4 rounded-lg">
-          <h3 class="font-medium text-green-800">Recebido Total</h3>
-          <p id="recebidoTotal" class="text-2xl font-bold text-green-600">R$ 0,00</p>
-        </div>
-      </div>
     </div>
   </main>
 
-  <!-- Tela cheia -->
-  <div id="fullscreen-container" class="fullscreen-container hidden">
-    <button id="close-fullscreen" class="close-fullscreen">Fechar (ESC)</button>
-    <div class="fullscreen-chart-container">
-      <canvas id="chartFullscreen"></canvas>
+  <footer class="bg-gray-800 text-gray-300 mt-16">
+    <div class="max-w-screen-xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+        <p>© <span id="currentYear"></span> Teller. Todos os direitos reservados.</p>
     </div>
-    <div class="fullscreen-summary">
-      <div class="fullscreen-summary-item bg-blue-50">
-        <div class="fullscreen-summary-title text-blue-800">Meta Total</div>
-        <div id="fullscreen-meta" class="fullscreen-summary-value text-blue-600">R$ 0,00</div>
-      </div>
-      <div class="fullscreen-summary-item bg-green-50">
-        <div class="fullscreen-summary-title text-green-800">Recebido Total</div>
-        <div id="fullscreen-recebido" class="fullscreen-summary-value text-green-600">R$ 0,00</div>
-      </div>
-      <div class="fullscreen-summary-item bg-indigo-50">
-        <div class="fullscreen-summary-title text-indigo-800">Percentual Alcançado</div>
-        <div id="fullscreen-percent" class="fullscreen-summary-value text-indigo-600">0%</div>
-      </div>
+  </footer>
+
+  <div id="fullscreen-container" class="fullscreen-container hidden">
+    <button id="close-fullscreen" class="close-fullscreen-btn" aria-label="Fechar modo apresentação">×</button>
+    
+    <div class="fullscreen-content-wrapper">
+        
+        <div class="fullscreen-column" id="fullscreen-column-main">
+            <div class="section-header-fullscreen">Meta Financeiro D30</div>
+            <div class="fullscreen-chart-wrapper">
+              <canvas id="chartFullscreenD30"></canvas>
+            </div>
+            <div class="fullscreen-summary-grid">
+              <div class="fullscreen-summary-item" style="background-color: #EBF8FF;">
+                <div class="fullscreen-summary-title" style="color: #2C5282;">Meta (D30)</div>
+                <div id="fullscreen-metaD30" class="fullscreen-summary-value" style="color: #3182CE;">R$ 0,00</div>
+              </div>
+              <div class="fullscreen-summary-item" style="background-color: #E6FFFA;">
+                <div class="fullscreen-summary-title" style="color: #234E52;">Recebido (D30)</div>
+                <div id="fullscreen-recebidoD30" class="fullscreen-summary-value" style="color: #2F855A;">R$ 0,00</div>
+              </div>
+              <div class="fullscreen-summary-item" style="background-color: #FEFCBF;">
+                <div class="fullscreen-summary-title" style="color: #744210;">Alcançado (D30)</div>
+                <div id="fullscreen-percentD30" class="fullscreen-summary-value" style="color: #D69E2E;">0%</div>
+              </div>
+            </div>
+        </div>
+
+        <div class="fullscreen-column" id="fullscreen-column-secondary">
+            <div class="section-header-fullscreen">NPS e Recuperação</div>
+            <div class="fullscreen-nps-grid">
+                <div class="fullscreen-summary-item" style="background-color: #FEFCBF;">
+                    <div class="fullscreen-summary-title" style="color: #744210;">Total Respondentes</div>
+                    <div id="fullscreen-nps-total" class="fullscreen-summary-value" style="color: #B7791F;">0</div>
+                </div>
+                <div class="fullscreen-summary-item" style="background-color: #E6FFFA;">
+                    <div class="fullscreen-summary-title" style="color: #234E52;">Promotores</div>
+                    <div id="fullscreen-nps-promotores" class="fullscreen-summary-value" style="color: #2F855A;">0% (0)</div>
+                </div>
+                <div class="fullscreen-summary-item" style="background-color: #FFF5F7;">
+                    <div class="fullscreen-summary-title" style="color: #742A2A;">Detratores</div>
+                    <div id="fullscreen-nps-detratores" class="fullscreen-summary-value" style="color: #C53030;">0% (0)</div>
+                </div>
+                <div class="fullscreen-summary-item" style="background-color: #EBF8FF;">
+                    <div class="fullscreen-summary-title" style="color: #2C5282;">NPS Final (% Promotores)</div>
+                    <div id="fullscreen-nps-resultado" class="fullscreen-summary-value" style="color: #3182CE; font-weight: bold;">0%</div>
+                </div>
+            </div>
+            
+            <div class="section-header-fullscreen mt-4">Recuperação (> 30 dias)</div>
+            <div class="fullscreen-summary-grid" style="grid-template-columns: 1fr;">
+              <div class="fullscreen-summary-item" style="background-color: #E6FFFA;">
+                <div class="fullscreen-summary-title" style="color: #234E52;">Total Recuperado (>30d)</div>
+                <div id="fullscreen-recuperadoMais30" class="fullscreen-summary-value" style="color: #2F855A;">R$ 0,00</div>
+              </div>
+            </div>
+        </div>
+        
+        <div class="fullscreen-column" id="fullscreen-column-tertiary">
+            <div class="section-header-fullscreen">Meta Anual</div>
+            <div class="fullscreen-chart-wrapper">
+              <canvas id="chartFullscreenAnual"></canvas>
+            </div>
+            <div class="fullscreen-summary-grid">
+              <div class="fullscreen-summary-item" style="background-color: #EBF8FF;">
+                <div class="fullscreen-summary-title" style="color: #2C5282;">Meta Anual</div>
+                <div id="fullscreen-metaAnual" class="fullscreen-summary-value" style="color: #3182CE;">R$ 0,00</div>
+              </div>
+              <div class="fullscreen-summary-item" style="background-color: #E6FFFA;">
+                <div class="fullscreen-summary-title" style="color: #234E52;">Recebido Anual</div>
+                <div id="fullscreen-recebidoAnual" class="fullscreen-summary-value" style="color: #2F855A;">R$ 0,00</div>
+              </div>
+              <div class="fullscreen-summary-item" style="background-color: #FEFCBF;">
+                <div class="fullscreen-summary-title" style="color: #744210;">Alcançado Anual</div>
+                <div id="fullscreen-percentAnual" class="fullscreen-summary-value" style="color: #D69E2E;">0%</div>
+              </div>
+            </div>
+        </div>
     </div>
   </div>
 
   <script>
-    // Elementos do DOM
-    const metaInput = document.getElementById('inputMeta');
-    const recInput = document.getElementById('inputRecebido');
-    const pctInput = document.getElementById('inputPercent');
-    const metaTotal = document.getElementById('metaTotal');
-    const recTotal = document.getElementById('recebidoTotal');
-    const fullscreenMeta = document.getElementById('fullscreen-meta');
-    const fullscreenRecebido = document.getElementById('fullscreen-recebido');
-    const fullscreenPercent = document.getElementById('fullscreen-percent');
-    const ctx = document.getElementById('chartFinanceiro').getContext('2d');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    const fullscreenContainer = document.getElementById('fullscreen-container');
-    const closeFullscreen = document.getElementById('close-fullscreen');
-    
-    // Configuração do gráfico principal
-    const chart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Recebido', 'A Receber'],
-        datasets: [{
-          data: [0, 100],
-          backgroundColor: ['#10B981', '#E5E7EB'],
-          borderWidth: 0,
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '75%',
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              boxWidth: 12,
-              padding: 20,
-              font: {
-                family: 'Poppins',
-                size: 13
-              }
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); mobileMenu.classList.toggle('hidden'); });
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
             }
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.label}: R$ ${context.raw.toFixed(2).replace('.', ',')}`;
-              }
-            }
-          }
-        }
-      }
-    });
-    
-    // Gráfico em tela cheia
-    let fullscreenChartInstance = null;
-    
-    function initFullscreenChart() {
-      const ctxFull = document.getElementById('chartFullscreen').getContext('2d');
-      fullscreenChartInstance = new Chart(ctxFull, {
-        type: 'doughnut',
-        data: JSON.parse(JSON.stringify(chart.data)), // Clone dos dados
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          cutout: '60%',
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                boxWidth: 16,
-                padding: 30,
-                font: {
-                  family: 'Poppins',
-                  size: 16
+        });
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Meta D30 (Principal)
+        const metaD30Input = document.getElementById('inputMetaD30');
+        const recD30Input = document.getElementById('inputRecebidoD30');
+        const pctD30Input = document.getElementById('inputPercentD30');
+        const metaTotalD30El = document.getElementById('metaTotalD30');
+        const recTotalD30El = document.getElementById('recebidoTotalD30');
+        const ctxMainD30 = document.getElementById('chartFinanceiroD30').getContext('2d');
+        
+        // Recuperação > 30 dias
+        const recMais30Input = document.getElementById('inputRecuperadoMais30');
+        const recuperadoTotalMais30El = document.getElementById('recuperadoTotalMais30');
+
+        // NPS
+        const npsPromotoresInput = document.getElementById('inputNPSPromotores');
+        const npsNeutrosInput = document.getElementById('inputNPSNeutros');
+        const npsDetratoresInput = document.getElementById('inputNPSDetratores');
+        const npsTotalRespondentesEl = document.getElementById('npsTotalRespondentes');
+        const npsPercentPromotoresEl = document.getElementById('npsPercentPromotores');
+        const npsPercentDetratoresEl = document.getElementById('npsPercentDetratores');
+        const npsResultadoEl = document.getElementById('npsResultado');
+
+        // Meta Anual
+        const metaAnualInput = document.getElementById('inputMetaAnual');
+        const recAnualInput = document.getElementById('inputRecebidoAnual');
+        const pctAnualInput = document.getElementById('inputPercentAnual');
+        const metaTotalAnualEl = document.getElementById('metaTotalAnual');
+        const recTotalAnualEl = document.getElementById('recebidoTotalAnual');
+        const ctxMetaAnual = document.getElementById('chartMetaAnual').getContext('2d');
+        
+        // Fullscreen
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const fullscreenContainer = document.getElementById('fullscreen-container');
+        const closeFullscreenBtn = document.getElementById('close-fullscreen');
+        // Fullscreen - Meta D30
+        const fullscreenMetaD30El = document.getElementById('fullscreen-metaD30');
+        const fullscreenRecebidoD30El = document.getElementById('fullscreen-recebidoD30');
+        const fullscreenPercentD30El = document.getElementById('fullscreen-percentD30');
+        // Fullscreen - NPS
+        const fullscreenNpsTotalEl = document.getElementById('fullscreen-nps-total');
+        const fullscreenNpsPromotoresEl = document.getElementById('fullscreen-nps-promotores');
+        const fullscreenNpsDetratoresEl = document.getElementById('fullscreen-nps-detratores');
+        const fullscreenNpsResultadoEl = document.getElementById('fullscreen-nps-resultado');
+        // Fullscreen - Recuperação > 30 dias
+        const fullscreenRecuperadoMais30El = document.getElementById('fullscreen-recuperadoMais30');
+        // Fullscreen - Meta Anual
+        const fullscreenMetaAnualEl = document.getElementById('fullscreen-metaAnual');
+        const fullscreenRecebidoAnualEl = document.getElementById('fullscreen-recebidoAnual');
+        const fullscreenPercentAnualEl = document.getElementById('fullscreen-percentAnual');
+        
+        let mainD30ChartInstance = null;
+        let metaAnualChartInstance = null; 
+        let fullscreenD30ChartInstance = null;
+        let fullscreenAnualChartInstance = null;
+
+
+        function createChart(context, chartTypeLabel = 'Alcançado', isFullscreen = false) {
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: isFullscreen ? '65%' : '70%', 
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: isFullscreen ? 14 : 12, 
+                            padding: isFullscreen ? 15 : 15, 
+                            font: { family: 'Poppins', size: isFullscreen ? 12 : 11, weight: '500' }, 
+                            color: '#4A5568'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.7)',
+                        titleFont: { family: 'Poppins', weight: '600', size: isFullscreen ? 13 : 12 },
+                        bodyFont: { family: 'Poppins', size: isFullscreen ? 12 : 11 },
+                        padding: 8, 
+                        cornerRadius: 4,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${formatCurrency(context.raw)}`;
+                            }
+                        }
+                    },
+                    doughnutLabel: {
+                        labels: [
+                            {
+                                text: '0%',
+                                font: { size: isFullscreen ? '24' : '20', weight: 'bold', family: 'Poppins' }, 
+                                color: '#1877f2'
+                            },
+                            {
+                                text: chartTypeLabel,
+                                font: { size: isFullscreen ? '12' : '10', family: 'Poppins' }, 
+                                color: '#606770'
+                            }
+                        ]
+                    }
                 }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `${context.label}: R$ ${context.raw.toFixed(2).replace('.', ',')}`;
+            };
+            const doughnutLabelPlugin = {
+                id: 'doughnutLabel',
+                beforeDatasetsDraw(chart, args, pluginOptions) {
+                    const {ctx, data} = chart;
+                    const {labels} = pluginOptions;
+                    if (!labels || labels.length === 0) return;
+
+                    const percentText = labels[0].text;
+                    const achievedText = labels[1].text;
+
+                    ctx.save();
+                    const x = chart.getDatasetMeta(0).data[0].x;
+                    const y = chart.getDatasetMeta(0).data[0].y;
+                    
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    ctx.font = `${labels[0].font.weight} ${labels[0].font.size}px ${labels[0].font.family}`;
+                    ctx.fillStyle = labels[0].color;
+                    ctx.fillText(percentText, x, y - (parseInt(labels[0].font.size)/3.8)); 
+
+                    ctx.font = `${labels[1].font.weight || 'normal'} ${labels[1].font.size}px ${labels[1].font.family}`;
+                    ctx.fillStyle = labels[1].color;
+                    ctx.fillText(achievedText, x, y + (parseInt(labels[1].font.size)/1.1)); 
+                    
+                    ctx.restore();
                 }
-              }
-            }
-          }
+            };
+
+            return new Chart(context, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Recebido', 'A Receber'],
+                    datasets: [{
+                        data: [0, 100],
+                        backgroundColor: ['#42b72a', '#e4e6eb'],
+                        borderColor: ['#ffffff', '#ffffff'],
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: options,
+                plugins: [doughnutLabelPlugin]
+            });
         }
-      });
-    }
+        
+        mainD30ChartInstance = createChart(ctxMainD30, 'Alcançado D30');
+        metaAnualChartInstance = createChart(ctxMetaAnual, 'Alcançado Anual');
+
+
+        function formatCurrency(value) {
+            if (isNaN(value)) return 'R$ 0,00';
+            return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
+        }
     
-    // Função para formatar moeda
-    function formatCurrency(value) {
-      return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
-    }
+        function updateD30Dashboard() { 
+            const meta = parseFloat(metaD30Input.value) || 0;
+            const rec = parseFloat(recD30Input.value) || 0;
+            const pct = meta > 0 ? (rec / meta) * 100 : 0;
+            const aReceber = Math.max(0, meta - rec);
+
+            pctD30Input.value = pct.toFixed(2) + '%';
+            metaTotalD30El.textContent = formatCurrency(meta);
+            recTotalD30El.textContent = formatCurrency(rec);
+            
+            if (mainD30ChartInstance) {
+                mainD30ChartInstance.data.datasets[0].data = [rec, aReceber];
+                mainD30ChartInstance.options.plugins.doughnutLabel.labels[0].text = pct.toFixed(1) + '%';
+                mainD30ChartInstance.update('none');
+            }
+
+            if (!fullscreenContainer.classList.contains('hidden')) {
+                if (fullscreenMetaD30El) fullscreenMetaD30El.textContent = formatCurrency(meta);
+                if (fullscreenRecebidoD30El) fullscreenRecebidoD30El.textContent = formatCurrency(rec);
+                if (fullscreenPercentD30El) fullscreenPercentD30El.textContent = pct.toFixed(2) + '%';
+                
+                if (fullscreenD30ChartInstance) {
+                    fullscreenD30ChartInstance.data.datasets[0].data = [rec, aReceber];
+                    fullscreenD30ChartInstance.options.plugins.doughnutLabel.labels[0].text = pct.toFixed(1) + '%';
+                    fullscreenD30ChartInstance.update('none');
+                }
+            }
+        }
+
+        function updateRecoveryMais30Dashboard() { 
+            const rec30 = parseFloat(recMais30Input.value) || 0;
+            recuperadoTotalMais30El.textContent = formatCurrency(rec30);
+            
+            if (!fullscreenContainer.classList.contains('hidden')) {
+                if(fullscreenRecuperadoMais30El) fullscreenRecuperadoMais30El.textContent = formatCurrency(rec30);
+            }
+        }
+
+        function updateAnualDashboard() {
+            const meta = parseFloat(metaAnualInput.value) || 0;
+            const rec = parseFloat(recAnualInput.value) || 0;
+            const pct = meta > 0 ? (rec / meta) * 100 : 0;
+            const aReceber = Math.max(0, meta - rec);
+
+            pctAnualInput.value = pct.toFixed(2) + '%';
+            metaTotalAnualEl.textContent = formatCurrency(meta);
+            recTotalAnualEl.textContent = formatCurrency(rec);
+            
+            if (metaAnualChartInstance) {
+                metaAnualChartInstance.data.datasets[0].data = [rec, aReceber];
+                metaAnualChartInstance.options.plugins.doughnutLabel.labels[0].text = pct.toFixed(1) + '%';
+                metaAnualChartInstance.update('none');
+            }
+
+            if (!fullscreenContainer.classList.contains('hidden')) {
+                if(fullscreenMetaAnualEl) fullscreenMetaAnualEl.textContent = formatCurrency(meta);
+                if(fullscreenRecebidoAnualEl) fullscreenRecebidoAnualEl.textContent = formatCurrency(rec);
+                if(fullscreenPercentAnualEl) fullscreenPercentAnualEl.textContent = pct.toFixed(2) + '%';
+                if (fullscreenAnualChartInstance) {
+                    fullscreenAnualChartInstance.data.datasets[0].data = [rec, aReceber];
+                    fullscreenAnualChartInstance.options.plugins.doughnutLabel.labels[0].text = pct.toFixed(1) + '%';
+                    fullscreenAnualChartInstance.update('none');
+                }
+            }
+        }
+
+
+        function updateNPS() {
+            const promotores = parseInt(npsPromotoresInput.value) || 0;
+            const neutros = parseInt(npsNeutrosInput.value) || 0;
+            const detratores = parseInt(npsDetratoresInput.value) || 0;
+            const totalRespondentes = promotores + neutros + detratores;
+
+            const percPromotoresNum = totalRespondentes > 0 ? (promotores / totalRespondentes) * 100 : 0;
+            const percDetratoresNum = totalRespondentes > 0 ? (detratores / totalRespondentes) * 100 : 0;
+            const npsScoreCalculado = percPromotoresNum;
+
+
+            npsTotalRespondentesEl.textContent = totalRespondentes;
+            npsPercentPromotoresEl.textContent = `${percPromotoresNum.toFixed(1)}% (${promotores})`;
+            npsPercentDetratoresEl.textContent = `${percDetratoresNum.toFixed(1)}% (${detratores})`;
+            npsResultadoEl.textContent = `${npsScoreCalculado.toFixed(1)}%`;
+            
+            if (npsScoreCalculado >= 70) npsResultadoEl.style.color = '#2F855A'; 
+            else if (npsScoreCalculado >= 50) npsResultadoEl.style.color = '#38A169'; 
+            else if (npsScoreCalculado >= 30) npsResultadoEl.style.color = '#D69E2E'; 
+            else npsResultadoEl.style.color = '#C53030'; 
+
+
+            if (!fullscreenContainer.classList.contains('hidden')) {
+                if(fullscreenNpsTotalEl) fullscreenNpsTotalEl.textContent = totalRespondentes;
+                if(fullscreenNpsPromotoresEl) fullscreenNpsPromotoresEl.textContent = `${percPromotoresNum.toFixed(1)}% (${promotores})`;
+                if(fullscreenNpsDetratoresEl) fullscreenNpsDetratoresEl.textContent = `${percDetratoresNum.toFixed(1)}% (${detratores})`;
+                if(fullscreenNpsResultadoEl) fullscreenNpsResultadoEl.textContent = `${npsScoreCalculado.toFixed(1)}%`;
+                if(fullscreenNpsResultadoEl && npsResultadoEl) fullscreenNpsResultadoEl.style.color = npsResultadoEl.style.color;
+            }
+        }
     
-    // Função para atualizar o dashboard
-    function updateDashboard() {
-      const meta = parseFloat(metaInput.value) || 0;
-      const rec = parseFloat(recInput.value) || 0;
-      const pct = meta > 0 ? (rec / meta) * 100 : 0;
-      
-      // Atualizar campos
-      pctInput.value = pct.toFixed(2) + '%';
-      metaTotal.textContent = formatCurrency(meta);
-      recTotal.textContent = formatCurrency(rec);
-      fullscreenMeta.textContent = formatCurrency(meta);
-      fullscreenRecebido.textContent = formatCurrency(rec);
-      fullscreenPercent.textContent = pct.toFixed(2) + '%';
-      
-      // Atualizar gráfico
-      chart.data.datasets[0].data = [rec, Math.max(meta - rec, 0)];
-      chart.update();
-      
-      // Atualizar gráfico em tela cheia se existir
-      if (fullscreenChartInstance) {
-        fullscreenChartInstance.data.datasets[0].data = [rec, Math.max(meta - rec, 0)];
-        fullscreenChartInstance.update();
-      }
-    }
+        metaD30Input.addEventListener('input', updateD30Dashboard);
+        recD30Input.addEventListener('input', updateD30Dashboard);
+        recMais30Input.addEventListener('input', updateRecoveryMais30Dashboard);
+        npsPromotoresInput.addEventListener('input', updateNPS);
+        npsNeutrosInput.addEventListener('input', updateNPS);
+        npsDetratoresInput.addEventListener('input', updateNPS);
+        metaAnualInput.addEventListener('input', updateAnualDashboard);
+        recAnualInput.addEventListener('input', updateAnualDashboard);
     
-    // Event listeners
-    metaInput.addEventListener('input', updateDashboard);
-    recInput.addEventListener('input', updateDashboard);
+        fullscreenBtn.addEventListener('click', function() {
+            if (fullscreenD30ChartInstance) fullscreenD30ChartInstance.destroy();
+            const ctxFullD30 = document.getElementById('chartFullscreenD30').getContext('2d');
+            fullscreenD30ChartInstance = createChart(ctxFullD30, 'Alcançado D30', true);
+            
+            if (fullscreenAnualChartInstance) fullscreenAnualChartInstance.destroy();
+            const ctxFullAnual = document.getElementById('chartFullscreenAnual').getContext('2d');
+            fullscreenAnualChartInstance = createChart(ctxFullAnual, 'Alcançado Anual', true);
+            
+            updateD30Dashboard(); 
+            updateRecoveryMais30Dashboard();
+            updateNPS();
+            updateAnualDashboard();
+            
+            fullscreenContainer.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
     
-    // Menu mobile
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
+        closeFullscreenBtn.addEventListener('click', function() {
+            fullscreenContainer.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
     
-    mobileMenuBtn.addEventListener('click', function() {
-      mobileMenu.classList.toggle('hidden');
-    });
-    
-    // Tela cheia
-    fullscreenBtn.addEventListener('click', function() {
-      if (!fullscreenChartInstance) {
-        initFullscreenChart();
-      }
-      
-      // Atualizar dados do gráfico em tela cheia
-      fullscreenChartInstance.data.datasets[0].data = chart.data.datasets[0].data;
-      fullscreenChartInstance.update();
-      
-      // Atualizar valores na tela cheia
-      fullscreenMeta.textContent = metaTotal.textContent;
-      fullscreenRecebido.textContent = recTotal.textContent;
-      fullscreenPercent.textContent = pctInput.value;
-      
-      fullscreenContainer.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    });
-    
-    closeFullscreen.addEventListener('click', function() {
-      fullscreenContainer.classList.add('hidden');
-      document.body.style.overflow = 'auto';
-    });
-    
-    // Fechar com ESC
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && !fullscreenContainer.classList.contains('hidden')) {
-        fullscreenContainer.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-      }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !fullscreenContainer.classList.contains('hidden')) {
+                closeFullscreenBtn.click();
+            }
+        });
+
+        updateD30Dashboard();
+        updateRecoveryMais30Dashboard();
+        updateNPS();
+        updateAnualDashboard();
+
+        const currentPathDash = window.location.pathname.split("/").pop() || "index.html";
+        const navLinks = document.querySelectorAll('header .nav-link');
+        const dropdownItems = document.querySelectorAll('header .dropdown-item');
+        let activeParentFound = false;
+
+        dropdownItems.forEach(item => {
+            item.classList.remove('active'); 
+            const parentDropdownBtn = item.closest('.dropdown')?.querySelector('.dropdown-btn');
+            if (parentDropdownBtn) parentDropdownBtn.classList.remove('active-parent'); 
+
+            if (item.getAttribute('href') === currentPathDash) {
+                item.classList.add('active');
+                if (parentDropdownBtn) {
+                    parentDropdownBtn.classList.add('active-parent');
+                    activeParentFound = true;
+                }
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active'); 
+            if (link.getAttribute('href') === currentPathDash) {
+                if (!activeParentFound) { 
+                     link.classList.add('active');
+                }
+            }
+        });
+        
+        const mobileMenuItems = document.querySelectorAll('#mobile-menu .mobile-menu-item');
+        mobileMenuItems.forEach(item => {
+            item.classList.remove('active'); 
+            if (item.getAttribute('href') === currentPathDash) {
+                item.classList.add('active');
+            }
+        });
     });
   </script>
 </body>

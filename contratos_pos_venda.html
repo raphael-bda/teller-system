@@ -3,92 +3,397 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teller - Contratos Pos Venda</title>
-  <!-- Import Poppins from Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+  <title>Teller - Pós-Venda Pacotes e Cursos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="IMG/Teller Logo.png" type="image/png">
   <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-    .dropdown-menu { display: none; }
-    .dropdown:hover > .dropdown-menu { display: block; }
+    body { font-family: 'Poppins', sans-serif; background-color: #f0f2f5; color: #1c1e21; }
+    .header-shadow { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .nav-link { padding: 0.75rem 1rem; font-weight: 500; color: #606770; transition: background-color 0.2s, color 0.2s; border-radius: 0.375rem; display: flex; align-items: center; }
+    .nav-link:hover { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-btn { padding: 0.75rem 1rem; font-weight: 500; color: #606770; background-color: transparent; border: none; cursor: pointer; border-radius: 0.375rem; transition: background-color 0.2s, color 0.2s; display: flex; align-items: center; }
+    .dropdown-btn:hover, .dropdown-btn.active-parent { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-content { display: none; position: absolute; left: 0; top: calc(100% + 5px); background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); min-width: 240px; z-index: 50; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown-item { display: block; padding: 0.75rem 1.5rem; color: #1c1e21; transition: background-color 0.2s, color 0.2s; }
+    .dropdown-item:hover, .dropdown-item.active { background-color: #f0f2f5; color: #1877f2; font-weight: 500; }
+    .main-content-pt { padding-top: 5rem; }
+    .page-card { background-color: white; border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    @media (min-width: 768px) { .page-card { padding: 2rem; } }
+    .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151; }
+    .form-select { width: 100%; padding: 0.75rem 1rem; border: 1px solid #ccd0d5; border-radius: 0.375rem; transition: border-color 0.2s, box-shadow 0.2s; background-color: #f5f6f7; line-height: 1.5; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
+    .form-select:focus { outline: none; border-color: #1877f2; box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2); background-color: white; }
+    .details-card { margin-top: 2rem; background-color: #e7f3ff; border-radius: 0.5rem; border-left: 4px solid #1877f2; display: none; }
+    .detail-item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1.5rem; border-bottom: 1px solid #cce3ff; font-size: 0.95rem; }
+    .detail-item:last-child { border-bottom: none; }
+    .detail-label { font-weight: 500; color: #1c1e21; }
+    .detail-value-container { display: flex; align-items: center; justify-content: flex-end; }
+    .detail-value { font-weight: 600; color: #1877f2; text-align: left; }
+    .detail-value-strong { font-weight: 700; color: #107510; }
+    .copy-value-btn { background-color: #6c757d; color: white; padding: 0.15rem 0.5rem; border-radius: 0.25rem; font-size: 0.7rem; font-weight: 500; cursor: pointer; margin-left: 0.75rem; transition: background-color 0.2s; border: none; line-height: 1; vertical-align: middle; }
+    .copy-value-btn:hover { background-color: #5a6268; }
+    .copy-value-btn.copied { background-color: #28a745; }
+    .mobile-menu { background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .mobile-menu-item { padding: 1rem 1.5rem; color: #1c1e21; border-bottom: 1px solid #f0f2f5; font-weight: 500; }
+    .mobile-menu-item:hover, .mobile-menu-item.active { background-color: #e7f3ff; color: #1877f2; }
+    .mobile-menu-item:last-child { border-bottom: none; }
+    .detail-group { padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid #cce3ff;}
+    .detail-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .detail-group-title { font-weight: 600; color: #1d3c6e; margin-bottom: 0.5rem; font-size: 1rem; padding-top: 0.5rem;}
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  
-<header class="fixed w-full bg-white shadow-custom z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <div class="flex-shrink-0">
-        <a href="index.html">
-          <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
-        </a>
-      </div>
-      <nav class="hidden md:flex space-x-8 items-center">
-        <a href="index.html" class="px-3 py-2 hover:text-blue-600 font-medium">Início</a>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Financeiro</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-            <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-            <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-            <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-            <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-          </div>
+<body>
+  <header class="fixed w-full bg-white header-shadow z-50 h-16">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div class="flex justify-between items-center h-full">
+            <div class="flex-shrink-0">
+                <a href="index.html">
+                    <img class="h-12 sm:h-14 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+                </a>
+            </div>
+            <nav class="hidden md:flex space-x-1 items-center">
+                <a href="index.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Início
+                </a>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Financeiro
+                        <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="financeiro_dashboard.html" class="dropdown-item">Dashboard</a>
+                        <a href="boleto.html" class="dropdown-item">Boleto</a>
+                        <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+                        <a href="multa.html" class="dropdown-item">Multa</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn"> 
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.552-.257m-4.286 3.15A4.5 4.5 0 004 10.5v1.75A4.5 4.5 0 008.5 16.5h3A4.5 4.5 0 0016 12.25v-1.75a4.5 4.5 0 00-1.849-3.676l-.516-.344a2.5 2.5 0 00-3.206 1.08L8.433 7.418zM12 10.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path><path d="M15.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM4.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM1.155 8.019A4.502 4.502 0 014 4.5h3.5A4.502 4.502 0 0111.345 8.02l.065.043a2.5 2.5 0 013.416-1.027L16 7.5V4.5a2 2 0 00-2-2h- 상황에 따라 채워넣기"></path></svg>
+                        Comercial
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+                    </div>
+                </div>
+                <div class="relative dropdown"> 
+                    <button class="dropdown-btn active-parent"> <!-- Pós-venda ativo -->
+                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 018.5 8H11a1 1 0 01.949.684l.57 2.285a1 1 0 01-.364 1.118l-2.423 1.818a1 1 0 00-.364 1.118l.57 2.285A1 1 0 018.949 18H6.153a1 1 0 01-.986-.836l-.74-4.435A1 1 0 013.5 12H2a1 1 0 01-1-1V4a1 1 0 011-1zm14 0a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 0118.5 8H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818A1 1 0 0018.5 14H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818a1 1 0 00.949.684h2.153a1 1 0 00.986-.836l.74-4.435A1 1 0 0018.5 12H17a1 1 0 00-1-1V4a1 1 0 001-1z"></path></svg>
+                        Pós-Venda
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                         <a href="contratos_pos_venda.html" class="dropdown-item active">Pacotes e Cursos Pós-Venda</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                        Geral
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+                        <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+                    </div>
+                </div>
+                <a href="contato.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                    Contato
+                </a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Comercial</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Pós-Venda</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Geral</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-            <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-          </div>
-        </div>
-        <a href="contato.html" class="px-3 py-2 hover:text-blue-600 font-medium">Contato</a>
-      </nav>
-      <div class="md:hidden">
-        <button id="mobile-menu-btn" class="p-2 focus:outline-none">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-      </div>
     </div>
-  </div>
-  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
-    <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Início</a>
-    <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-    <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-    <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-    <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-    <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-    <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-    <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-    <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-    <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-    <a href="contato.html" class="block px-4 py-2 hover:bg-gray-100">Contato</a>
-  </div>
-</header>
-<script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-</script>
+    <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+        <a href="index.html" class="mobile-menu-item">Início</a>
+        <a href="financeiro_dashboard.html" class="mobile-menu-item">Dashboard Financeiro</a>
+        <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+        <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+        <a href="multa.html" class="mobile-menu-item">Multa</a>
+        <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+        <a href="contratos_pos_venda.html" class="mobile-menu-item active">Pacotes Pós-Venda</a>
+        <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+        <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+        <a href="contato.html" class="mobile-menu-item">Contato</a>
+    </div>
+  </header>
 
-  <main class="pt-24 max-w-4xl mx-auto py-8">
-    <h1 class='text-2xl font-semibold mb-4'>Contratos Pós-Venda</h1><p>Gestão de contratos na área de pós-venda.</p>
+  <main class="main-content-pt">
+    <div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Pacotes e Cursos Pós-Venda</h1>
+            <p class="mt-2 text-lg text-gray-600">Consulte os valores e condições especiais para alunos e não alunos.</p>
+        </div>
+    
+        <div class="page-card mb-8">
+          <div class="space-y-6">
+            <div>
+              <label for="pos-venda-package-select" class="form-label">SELECIONE O PACOTE OU CURSO:</label>
+              <select id="pos-venda-package-select" class="form-select">
+                <option value="" disabled selected>Escolha uma opção...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div id="pos-venda-details-container" class="details-card">
+            <div class="p-6"> 
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b border-blue-300 pb-3">
+                    DETALHES DO CURSO: <!-- Título ajustado -->
+                </h2>
+                <div id="package-details-content" class="space-y-1">
+                    <!-- Conteúdo dinâmico aqui, seguindo a estrutura do comercial.html -->
+                    <div class="detail-item">
+                        <span class="detail-label">NOME DO CURSO:</span>
+                        <div class="detail-value-container">
+                            <span id="pv-course-name" class="detail-value">-</span>
+                            <button class="copy-value-btn" data-clipboard-target="#pv-course-name">copiar</button>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">VALOR TOTAL DO CURSO:</span>
+                        <div class="detail-value-container">
+                            <span id="pv-total-value" class="detail-value">-</span>
+                            <button class="copy-value-btn" data-clipboard-target="#pv-total-value">copiar</button>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">QUANTIDADE DE PARCELAS:</span>
+                        <div class="detail-value-container">
+                            <span id="pv-installment-count" class="detail-value">-</span>
+                            <button class="copy-value-btn" data-clipboard-target="#pv-installment-count">copiar</button>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">VALOR TOTAL DO SEMESTRE:</span>
+                        <div class="detail-value-container">
+                            <span id="pv-semester-value" class="detail-value">-</span>
+                            <button class="copy-value-btn" data-clipboard-target="#pv-semester-value">copiar</button>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">VALOR DA PARCELA SEM DESCONTO:</span>
+                        <div class="detail-value-container">
+                            <span id="pv-installment-full" class="detail-value">-</span>
+                            <button class="copy-value-btn" data-clipboard-target="#pv-installment-full">copiar</button>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">VALOR DA 1ª PARCELA COM DESCONTO:</span>
+                        <div class="detail-value-container">
+                            <span id="pv-first-discount" class="detail-value">-</span>
+                            <button class="copy-value-btn" data-clipboard-target="#pv-first-discount">copiar</button>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">VALOR DA PARCELA COM DESCONTO:</span>
+                        <div class="detail-value-container">
+                            <span id="pv-installment-discount" class="detail-value">-</span>
+                            <button class="copy-value-btn" data-clipboard-target="#pv-installment-discount">copiar</button>
+                        </div>
+                    </div>
+                     <!-- Seção para detalhes adicionais, como as várias opções do ENEM -->
+                    <div id="pv-additional-details" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
   </main>
+
+  <footer class="bg-gray-800 text-gray-300 mt-16">
+    <div class="max-w-screen-xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+        <p>© <span id="currentYear"></span> Teller. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); mobileMenu.classList.toggle('hidden'); });
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+        }
+      });
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+      const posVendaPackages = {
+        "pacote_15_pontos": { name: "PACOTE DE 15 PONTOS (Alunos e Não Alunos)", type: "pacote_pontos", inscricao: 49.90, parcelamentoNormal: { parcelas: 12, valorParcela: 277.49 }, parcelamentoDesconto: { parcelas: 12, valorParcela: 177.49 } },
+        "pacote_7_pontos": { name: "PACOTE DE 7 PONTOS (Alunos e Não Alunos)", type: "pacote_pontos", inscricao: 49.90, parcelamentoNormal: { parcelas: 12, valorParcela: 159.99 }, parcelamentoDesconto: { parcelas: 12, valorParcela: 69.99 } },
+        "pacote_5_pontos": { name: "PACOTE DE 5 PONTOS (Alunos e Não Alunos)", type: "pacote_pontos", inscricao: 49.90, parcelamentoNormal: { parcelas: 12, valorParcela: 244.99 }, parcelamentoDesconto: { parcelas: 12, valorParcela: 144.99 } },
+        "pacote_3_pontos": { name: "PACOTE DE 3 PONTOS (Alunos e Não Alunos)", type: "pacote_pontos", inscricao: 49.90, parcelamentoNormal: { parcelas: 12, valorParcela: 159.99 }, parcelamentoDesconto: { parcelas: 12, valorParcela: 59.99 } },
+        "pos_geral_alunos": { name: "PÓS-GRADUAÇÕES GERAL (AO VIVO - ALUNOS)", type: "pos_graduacao", inscricao: 49.90, parcelamentoNormal: { parcelas: 13, valorParcela: 137.30 }, parcelamentoDesconto: { parcelas: 13, valorParcela: 87.30 } },
+        "pos_geral_nao_alunos": { name: "PÓS-GRADUAÇÕES GERAL (AO VIVO - NÃO ALUNOS)", type: "pos_graduacao", inscricao: 49.90, parcelamentoNormal: { parcelas: 13, valorParcela: 147.00 }, parcelamentoDesconto: { parcelas: 13, valorParcela: 97.00 } },
+        "enem_professores": { name: "ENEM DOS PROFESSORES (Alunos e Não Alunos)", type: "enem_professores", pix: { parcelas: 1, valorParcela: 545.00, total: 545.00 }, cartao: [ { parcelas: 7, valorParcela: 83.57 }, { parcelas: 1, valorParcela: 585.00 } ], boleto: { parcelas: 7, valorParcela: 117.06 } },
+        "extensao_100h": { name: "EXTENSÃO UNIVERSITÁRIA - 100 HORAS", type: "extensao", pix: { parcelas: 1, valorParcela: 119.90, total: 119.90 } },
+        "extensao_200h_combo": { name: "EXTENSÃO UNIVERSITÁRIA - COMBO 200 HORAS", type: "extensao", pix: { parcelas: 1, valorParcela: 239.80, total: 239.80 } }
+      };
+
+      const packageSelect = document.getElementById('pos-venda-package-select');
+      const detailsContainer = document.getElementById('pos-venda-details-container');
+      const additionalDetailsEl = document.getElementById('pv-additional-details');
+
+
+      function formatCurrency(value) {
+        if (isNaN(value) || value === null) return 'N/A';
+        return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
+      }
+      
+      function initializeCopyButtons() {
+        document.querySelectorAll('.copy-value-btn').forEach(button => {
+            const newButton = button.cloneNode(true); // Clona para remover listeners antigos
+            button.parentNode.replaceChild(newButton, button);
+
+            newButton.addEventListener('click', function() {
+                const targetId = this.dataset.clipboardTarget;
+                const targetElement = document.querySelector(targetId); // Busca pelo ID correto
+                if (targetElement) {
+                    const valueToCopy = targetElement.textContent.trim();
+                    navigator.clipboard.writeText(valueToCopy).then(() => {
+                        const originalText = this.textContent;
+                        this.textContent = 'copiado!';
+                        this.classList.add('copied');
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                            this.classList.remove('copied');
+                        }, 1500);
+                    }).catch(err => {
+                        console.error('Erro ao copiar valor: ', err);
+                        // alert('Não foi possível copiar o valor.');
+                    });
+                } else {
+                    console.warn('Elemento alvo não encontrado para copiar:', targetId);
+                }
+            });
+        });
+    }
+
+
+      for (const key in posVendaPackages) {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = posVendaPackages[key].name;
+        packageSelect.appendChild(option);
+      }
+
+      packageSelect.addEventListener('change', function() {
+        const selectedKey = this.value;
+        additionalDetailsEl.innerHTML = ''; // Limpa detalhes adicionais
+        if (!selectedKey) {
+          detailsContainer.style.display = 'none';
+          return;
+        }
+
+        const data = posVendaPackages[selectedKey];
+        
+        let nomeCurso = data.name;
+        let valorTotalCursoBruto = 'N/A';
+        let quantidadeParcelas = 'N/A';
+        let valorTotalSemestreOuNegociado = 'N/A';
+        let valorParcelaSemDesconto = 'N/A';
+        let valorPrimeiraParcelaComDesconto = 'N/A';
+        let valorParcelaComDesconto = 'N/A';
+
+        if (data.type === "pacote_pontos" || data.type === "pos_graduacao") {
+            valorTotalCursoBruto = formatCurrency(data.inscricao + (data.parcelamentoNormal.parcelas * data.parcelamentoNormal.valorParcela));
+            quantidadeParcelas = data.parcelamentoDesconto.parcelas + "x";
+            valorTotalSemestreOuNegociado = formatCurrency(data.inscricao + (data.parcelamentoDesconto.parcelas * data.parcelamentoDesconto.valorParcela));
+            valorParcelaSemDesconto = formatCurrency(data.parcelamentoNormal.valorParcela);
+            valorPrimeiraParcelaComDesconto = formatCurrency(data.inscricao) + " + " + formatCurrency(data.parcelamentoDesconto.valorParcela);
+            valorParcelaComDesconto = formatCurrency(data.parcelamentoDesconto.valorParcela);
+        } else if (data.type === "enem_professores") {
+            valorTotalCursoBruto = formatCurrency(data.boleto.parcelas * data.boleto.valorParcela); // Boleto como base
+            quantidadeParcelas = `${data.pix.parcelas}x (PIX)`; // Prioriza PIX para simplicidade
+            valorTotalSemestreOuNegociado = formatCurrency(data.pix.total);
+            valorParcelaSemDesconto = formatCurrency(data.boleto.valorParcela) + " (Boleto)";
+            valorPrimeiraParcelaComDesconto = formatCurrency(data.pix.total) + " (PIX)";
+            valorParcelaComDesconto = formatCurrency(data.cartao[0].valorParcela) + ` (${data.cartao[0].parcelas}x Cartão)`;
+
+            // Adiciona detalhes das outras formas de pagamento em "additionalDetails"
+            let enemDetailsHTML = '<div class="detail-group mt-3"><p class="detail-group-title">Outras Opções de Pagamento (ENEM):</p>';
+            data.cartao.forEach((opt, index) => {
+                enemDetailsHTML += `<div class="detail-item"><span class="detail-label">Cartão Opção ${index + 1}:</span>
+                                    <div class="detail-value-container">
+                                        <span class="detail-value" id="enem-cartao-op${index}">${opt.parcelas}x de ${formatCurrency(opt.valorParcela)} (Total: ${formatCurrency(opt.parcelas * opt.valorParcela)})</span>
+                                        <button class="copy-value-btn" data-clipboard-target="#enem-cartao-op${index}">copiar</button>
+                                    </div>
+                                  </div>`;
+            });
+            enemDetailsHTML += `<div class="detail-item"><span class="detail-label">Boleto:</span>
+                                <div class="detail-value-container">
+                                    <span class="detail-value" id="enem-boleto">${data.boleto.parcelas}x de ${formatCurrency(data.boleto.valorParcela)} (Total: ${formatCurrency(data.boleto.parcelas * data.boleto.valorParcela)})</span>
+                                    <button class="copy-value-btn" data-clipboard-target="#enem-boleto">copiar</button>
+                                </div>
+                              </div>`;
+            enemDetailsHTML += '</div>';
+            additionalDetailsEl.innerHTML = enemDetailsHTML;
+
+        } else if (data.type === "extensao") {
+            valorTotalCursoBruto = formatCurrency(data.pix.total);
+            quantidadeParcelas = "1x (PIX)";
+            valorTotalSemestreOuNegociado = formatCurrency(data.pix.total);
+            valorParcelaSemDesconto = formatCurrency(data.pix.total);
+            valorPrimeiraParcelaComDesconto = formatCurrency(data.pix.total) + " (PIX)";
+            valorParcelaComDesconto = formatCurrency(data.pix.total);
+        }
+
+        document.getElementById('pv-course-name').textContent = nomeCurso;
+        document.getElementById('pv-total-value').textContent = valorTotalCursoBruto;
+        document.getElementById('pv-installment-count').textContent = quantidadeParcelas;
+        document.getElementById('pv-semester-value').textContent = valorTotalSemestreOuNegociado;
+        document.getElementById('pv-installment-full').textContent = valorParcelaSemDesconto;
+        document.getElementById('pv-first-discount').textContent = valorPrimeiraParcelaComDesconto;
+        document.getElementById('pv-installment-discount').textContent = valorParcelaComDesconto;
+        
+        detailsContainer.style.display = 'block';
+        initializeCopyButtons(); // Precisa ser chamado toda vez que o conteúdo é atualizado
+      });
+      
+      // Lógica de ativação do menu
+        const currentPathPosVenda = window.location.pathname.split("/").pop();
+        const dropdownsPosVenda = document.querySelectorAll('header .dropdown');
+        let isDropdownActivePos = false;
+        dropdownsPosVenda.forEach(dropdown => {
+            const items = dropdown.querySelectorAll('.dropdown-item');
+            let parentIsActive = false;
+            items.forEach(item => {
+                const href = item.getAttribute('href');
+                if (href && href.endsWith(currentPathPosVenda)) { // Verifica se o href termina com o path atual
+                    item.classList.add('active');
+                    parentIsActive = true;
+                    isDropdownActivePos = true;
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            const btn = dropdown.querySelector('.dropdown-btn');
+            if (parentIsActive) {
+                btn.classList.add('active-parent');
+            } else {
+                btn.classList.remove('active-parent');
+            }
+        });
+        const inicioLinkPosVenda = document.querySelector('header a.nav-link[href="index.html"]');
+        if (!isDropdownActivePos && (currentPathPosVenda === "index.html" || currentPathPosVenda === "" || currentPathPosVenda === "/")) {
+             if(inicioLinkPosVenda) inicioLinkPosVenda.classList.add('active');
+        } else {
+             if(inicioLinkPosVenda) inicioLinkPosVenda.classList.remove('active');
+        }
+    });
+  </script>
 </body>
 </html>

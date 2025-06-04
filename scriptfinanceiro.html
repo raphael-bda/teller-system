@@ -3,306 +3,466 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teller - Scriptfinanceiro</title>
-  <!-- Import Poppins from Google Fonts -->
+  <title>Teller - Scripts Financeiros</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="IMG/Teller Logo.png" type="image/png">
   <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-    .dropdown-menu { display: none; }
-    .dropdown:hover > .dropdown-menu { display: block; }
-    .message-bubble {
-      position: relative;
-      background: #e5efff;
-      border-radius: 1rem;
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #1c1e21;
+    }
+    .header-shadow { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .nav-link {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770;
+        transition: background-color 0.2s, color 0.2s; border-radius: 0.375rem; display: flex; align-items: center;
+    }
+    .nav-link:hover { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-btn {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770; background-color: transparent;
+        border: none; cursor: pointer; border-radius: 0.375rem;
+        transition: background-color 0.2s, color 0.2s; display: flex; align-items: center;
+    }
+    .dropdown-btn:hover, .dropdown-btn.active-parent { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-content {
+        display: none; position: absolute; left: 0; top: calc(100% + 5px); background-color: white;
+        border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); min-width: 240px;
+        z-index: 50; padding-top: 0.5rem; padding-bottom: 0.5rem;
+    }
+    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown-item {
+        display: block; padding: 0.75rem 1.5rem; color: #1c1e21;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .dropdown-item:hover, .dropdown-item.active { background-color: #f0f2f5; color: #1877f2; font-weight: 500; }
+    .main-content-pt { padding-top: 5rem; }
+
+    .page-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem; 
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px) { .page-card { padding: 2rem; } }
+
+    .script-item {
+      background-color: #e7f3ff; /* Fundo azul claro para cada script */
+      border-left: 4px solid #1877f2;
+      border-radius: 0.375rem; /* 6px */
       padding: 1rem;
       margin-bottom: 1.5rem;
+      transition: box-shadow 0.2s;
     }
-    .message-bubble:after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 1.5rem;
-      width: 0;
-      height: 0;
-      border: 10px solid transparent;
-      border-top-color: #e5efff;
-      border-bottom: 0;
-      margin-bottom: -10px;
+    .script-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .edit-area {
-      display: none;
+    .script-content {
+        color: #1c1e21;
+        line-height: 1.6;
+        white-space: pre-wrap; /* Mantém quebras de linha e espaços do textarea */
+        margin-bottom: 0.75rem;
     }
+    .script-actions button, .modal-button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 0.875rem; /* text-sm */
+        transition: background-color 0.2s, opacity 0.2s;
+    }
+    .script-actions button:hover, .modal-button:hover {
+        opacity: 0.85;
+    }
+    .edit-textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ccd0d5;
+        border-radius: 0.375rem;
+        background-color: #f5f6f7;
+        resize: vertical; /* Permite redimensionamento vertical */
+        min-height: 100px;
+    }
+    .edit-textarea:focus {
+        outline: none; border-color: #1877f2;
+        box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        background-color: white;
+    }
+
+    /* Modal styles */
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+        transition: opacity 0.3s ease;
+    }
+    .modal-content {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-height: 90vh; /* Para modais com muito conteúdo */
+        overflow-y: auto;
+    }
+
+    .mobile-menu { background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .mobile-menu-item {
+        padding: 1rem 1.5rem; color: #1c1e21; border-bottom: 1px solid #f0f2f5; font-weight: 500;
+    }
+    .mobile-menu-item:hover, .mobile-menu-item.active { background-color: #e7f3ff; color: #1877f2; }
+    .mobile-menu-item:last-child { border-bottom: none; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  
-<header class="fixed w-full bg-white shadow-custom z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <div class="flex-shrink-0">
-        <a href="index.html">
-          <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
-        </a>
-      </div>
-      <nav class="hidden md:flex space-x-8 items-center">
-        <a href="index.html" class="px-3 py-2 hover:text-blue-600 font-medium">Início</a>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Financeiro</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-            <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-            <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-            <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-            <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-          </div>
+<body>
+  <header class="fixed w-full bg-white header-shadow z-50 h-16">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div class="flex justify-between items-center h-full">
+            <div class="flex-shrink-0">
+                <a href="index.html">
+                    <img class="h-12 sm:h-14 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+                </a>
+            </div>
+            <nav class="hidden md:flex space-x-1 items-center">
+                <a href="index.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Início
+                </a>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Financeiro
+                        <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="financeiro_dashboard.html" class="dropdown-item">Dashboard</a>
+                        <a href="boleto.html" class="dropdown-item">Boleto</a>
+                        <a href="pix_credito.html" class="dropdown-item">PIX / Crédito</a>
+                        <a href="multa.html" class="dropdown-item">Multa</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.552-.257m-4.286 3.15A4.5 4.5 0 004 10.5v1.75A4.5 4.5 0 008.5 16.5h3A4.5 4.5 0 0016 12.25v-1.75a4.5 4.5 0 00-1.849-3.676l-.516-.344a2.5 2.5 0 00-3.206 1.08L8.433 7.418zM12 10.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path><path d="M15.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM4.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM1.155 8.019A4.502 4.502 0 014 4.5h3.5A4.502 4.502 0 0111.345 8.02l.065.043a2.5 2.5 0 013.416-1.027L16 7.5V4.5a2 2 0 00-2-2h- 상황에 따라 채워넣기"></path></svg>
+                        Comercial
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda (Comercial)</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 018.5 8H11a1 1 0 01.949.684l.57 2.285a1 1 0 01-.364 1.118l-2.423 1.818a1 1 0 00-.364 1.118l.57 2.285A1 1 0 018.949 18H6.153a1 1 0 01-.986-.836l-.74-4.435A1 1 0 013.5 12H2a1 1 0 01-1-1V4a1 1 0 011-1zm14 0a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 0118.5 8H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818A1 1 0 0018.5 14H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818a1 1 0 00.949.684h2.153a1 1 0 00.986-.836l.74-4.435A1 1 0 0018.5 12H17a1 1 0 00-1-1V4a1 1 0 001-1z"></path></svg>
+                        Pós-Venda
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn active-parent">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                        Geral
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+                        <a href="scriptfinanceiro.html" class="dropdown-item active">Scripts</a>
+                    </div>
+                </div>
+                <a href="contato.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                    Contato
+                </a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Comercial</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Pós-Venda</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Geral</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-            <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-          </div>
-        </div>
-        <a href="contato.html" class="px-3 py-2 hover:text-blue-600 font-medium">Contato</a>
-      </nav>
-      <div class="md:hidden">
-        <button id="mobile-menu-btn" class="p-2 focus:outline-none">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-      </div>
     </div>
-  </div>
-  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
-    <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Início</a>
-    <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-    <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-    <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-    <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-    <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-    <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-    <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-    <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-    <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-    <a href="contato.html" class="block px-4 py-2 hover:bg-gray-100">Contato</a>
-  </div>
-</header>
-<script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-</script>
+    <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+        <a href="index.html" class="mobile-menu-item">Início</a>
+        <a href="financeiro_dashboard.html" class="mobile-menu-item">Dashboard Financeiro</a>
+        <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+        <a href="pix_credito.html" class="mobile-menu-item">PIX / Crédito</a>
+        <a href="multa.html" class="mobile-menu-item">Multa</a>
+        <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+        <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+        <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+        <a href="scriptfinanceiro.html" class="mobile-menu-item active">Scripts</a>
+        <a href="contato.html" class="mobile-menu-item">Contato</a>
+    </div>
+  </header>
 
-  <main class="pt-24 max-w-4xl mx-auto py-8 px-4 sm:px-6">
-    <div class="flex justify-between items-center mb-6">
-      <div>
-        <h1 class='text-2xl font-semibold text-blue-800'>Scripts Financeiros</h1>
-        <p class="text-gray-600">Recados padrão para WhatsApp</p>
-      </div>
-      <button id="add-new-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-        + Adicionar Novo
-      </button>
-    </div>
-    
-    <div id="messages-container" class="bg-white rounded-lg shadow-md p-6">
-      <!-- Mensagens serão carregadas aqui -->
-    </div>
-    
-    <!-- Template para nova mensagem (hidden) -->
-    <div id="new-message-template" class="hidden">
-      <div class="message-bubble mb-6" data-id="">
-        <div class="content-area">
-          <p class="message-content"></p>
-          <div class="flex justify-end space-x-2 mt-3">
-            <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded text-sm">Editar</button>
-            <button class="copy-btn bg-blue-500 text-white px-3 py-1 rounded text-sm">Copiar</button>
-            <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded text-sm">Excluir</button>
-          </div>
+  <main class="main-content-pt">
+    <div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-8 pb-4 border-b border-gray-300">
+            <div class="mb-4 sm:mb-0 text-center sm:text-left">
+                <h1 class="text-3xl font-bold text-gray-800">Scripts Financeiros</h1>
+                <p class="mt-1 text-lg text-gray-600">Gerencie seus recados padrão para WhatsApp.</p>
+            </div>
+            <button id="add-new-script-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-150 ease-in-out flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                Adicionar Script
+            </button>
         </div>
-        <div class="edit-area">
-          <textarea class="w-full p-3 border rounded-lg mb-2" rows="4"></textarea>
-          <div class="flex justify-end space-x-2">
-            <button class="cancel-edit-btn bg-gray-500 text-white px-3 py-1 rounded text-sm">Cancelar</button>
-            <button class="save-edit-btn bg-green-500 text-white px-3 py-1 rounded text-sm">Salvar</button>
-          </div>
-        </div>
-      </div>
-    </div>
     
-    <!-- Modal para adicionar nova mensagem -->
-    <div id="add-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 class="text-lg font-semibold mb-4">Adicionar Novo Recado</h3>
-        <textarea id="new-message-text" class="w-full p-3 border rounded-lg mb-4" rows="6" placeholder="Digite o texto do recado..."></textarea>
-        <div class="flex justify-end space-x-3">
-          <button id="cancel-add-btn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancelar</button>
-          <button id="confirm-add-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Salvar</button>
+        <div id="scripts-container" class="page-card p-0 sm:p-0"> <!-- Removido padding do card principal se os itens já tem -->
+            <!-- Scripts serão carregados aqui -->
+             <div id="no-scripts-message" class="text-center py-12 text-gray-500 hidden">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <p class="text-xl font-semibold">Nenhum script salvo.</p>
+                <p class="mt-1">Clique em "Adicionar Script" para começar.</p>
+            </div>
         </div>
-      </div>
     </div>
   </main>
 
+  <!-- Template para script (será clonado) -->
+    <div id="script-template" class="hidden">
+      <div class="script-item" data-id="">
+        <div class="content-area">
+          <p class="script-content whitespace-pre-wrap"></p>
+          <div class="script-actions flex justify-end space-x-2 mt-3">
+            <button class="edit-btn bg-yellow-500 hover:bg-yellow-600 text-white modal-button flex items-center">
+                <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
+                Editar
+            </button>
+            <button class="copy-btn bg-green-500 hover:bg-green-600 text-white modal-button flex items-center">
+                <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm0 2h6v12H7V4zm5 2a1 1 0 011 1v2a1 1 0 11-2 0V7a1 1 0 011-1z"></path></svg>
+                Copiar
+            </button>
+            <button class="delete-btn bg-red-500 hover:bg-red-600 text-white modal-button flex items-center">
+                <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                Excluir
+            </button>
+          </div>
+        </div>
+        <div class="edit-area hidden mt-3">
+          <textarea class="edit-textarea mb-2" rows="5"></textarea>
+          <div class="flex justify-end space-x-2">
+            <button class="cancel-edit-btn bg-gray-500 hover:bg-gray-600 text-white modal-button">Cancelar</button>
+            <button class="save-edit-btn bg-blue-600 hover:bg-blue-700 text-white modal-button">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Modal para adicionar/editar script -->
+  <div id="script-modal" class="fixed inset-0 modal items-center justify-center hidden z-50 p-4">
+    <div class="modal-content p-6 w-full max-w-lg mx-auto">
+      <h3 id="modal-title" class="text-xl font-semibold mb-5 text-gray-800">Adicionar Novo Script</h3>
+      <textarea id="script-text-input" class="edit-textarea w-full mb-5" rows="8" placeholder="Digite o texto do script aqui..."></textarea>
+      <div class="flex justify-end space-x-3">
+        <button id="cancel-modal-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 modal-button">Cancelar</button>
+        <button id="confirm-modal-btn" class="bg-blue-600 hover:bg-blue-700 text-white modal-button">Salvar Script</button>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="bg-gray-800 text-gray-300 mt-16">
+    <div class="max-w-screen-xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+        <p>© <span id="currentYear"></span> Teller. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Elementos do DOM
-      const messagesContainer = document.getElementById('messages-container');
-      const addNewBtn = document.getElementById('add-new-btn');
-      const addModal = document.getElementById('add-modal');
-      const cancelAddBtn = document.getElementById('cancel-add-btn');
-      const confirmAddBtn = document.getElementById('confirm-add-btn');
-      const newMessageText = document.getElementById('new-message-text');
-      const template = document.getElementById('new-message-template');
-      
-      // Carregar mensagens salvas
-      loadMessages();
-      
-      // Evento para adicionar nova mensagem
-      addNewBtn.addEventListener('click', () => {
-        newMessageText.value = '';
-        addModal.classList.remove('hidden');
-      });
-      
-      // Cancelar adição
-      cancelAddBtn.addEventListener('click', () => {
-        addModal.classList.add('hidden');
-      });
-      
-      // Confirmar adição
-      confirmAddBtn.addEventListener('click', () => {
-        const text = newMessageText.value.trim();
-        if (text) {
-          addNewMessage(text);
-          addModal.classList.add('hidden');
+      // --- Início Script Menu Mobile e Footer ---
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); mobileMenu.classList.toggle('hidden'); });
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
         }
       });
-      
-      // Função para carregar mensagens
-      function loadMessages() {
-        messagesContainer.innerHTML = '';
-        const messages = getSavedMessages();
-        
-        if (messages.length === 0) {
-          messagesContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhum recado salvo ainda.</p>';
-          return;
-        }
-        
-        messages.forEach(message => {
-          addMessageToDOM(message.id, message.text);
-        });
-      }
-      
-      // Função para adicionar nova mensagem
-      function addNewMessage(text) {
-        const messages = getSavedMessages();
-        const newId = Date.now().toString();
-        const newMessage = { id: newId, text };
-        
-        messages.push(newMessage);
-        saveMessages(messages);
-        addMessageToDOM(newId, text);
-      }
-      
-      // Função para adicionar mensagem ao DOM
-      function addMessageToDOM(id, text) {
-        if (messagesContainer.querySelector('.text-gray-500')) {
-          messagesContainer.innerHTML = '';
-        }
-        
-        const clone = template.cloneNode(true);
-        const messageElement = clone.querySelector('.message-bubble');
-        messageElement.setAttribute('data-id', id);
-        
-        const contentArea = messageElement.querySelector('.content-area');
-        const editArea = messageElement.querySelector('.edit-area');
-        const messageContent = contentArea.querySelector('.message-content');
-        const editTextarea = editArea.querySelector('textarea');
-        
-        messageContent.textContent = text;
-        editTextarea.value = text;
-        
-        // Botões
-        const editBtn = contentArea.querySelector('.edit-btn');
-        const copyBtn = contentArea.querySelector('.copy-btn');
-        const deleteBtn = contentArea.querySelector('.delete-btn');
-        const cancelEditBtn = editArea.querySelector('.cancel-edit-btn');
-        const saveEditBtn = editArea.querySelector('.save-edit-btn');
-        
-        // Eventos
-        editBtn.addEventListener('click', () => {
-          contentArea.style.display = 'none';
-          editArea.style.display = 'block';
-        });
-        
-        copyBtn.addEventListener('click', () => {
-          navigator.clipboard.writeText(text);
-          alert('Recado copiado para a área de transferência!');
-        });
-        
-        deleteBtn.addEventListener('click', () => {
-          if (confirm('Tem certeza que deseja excluir este recado?')) {
-            deleteMessage(id);
-          }
-        });
-        
-        cancelEditBtn.addEventListener('click', () => {
-          editTextarea.value = text;
-          contentArea.style.display = 'block';
-          editArea.style.display = 'none';
-        });
-        
-        saveEditBtn.addEventListener('click', () => {
-          const newText = editTextarea.value.trim();
-          if (newText) {
-            updateMessage(id, newText);
-            messageContent.textContent = newText;
-            contentArea.style.display = 'block';
-            editArea.style.display = 'none';
-          }
-        });
-        
-        messagesContainer.appendChild(messageElement);
-      }
-      
-      // Funções para manipular localStorage
-      function getSavedMessages() {
-        const saved = localStorage.getItem('whatsapp_messages');
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+      // --- Fim Script Menu Mobile e Footer ---
+
+      const scriptsContainer = document.getElementById('scripts-container');
+      const addNewScriptBtn = document.getElementById('add-new-script-btn');
+      const scriptModal = document.getElementById('script-modal');
+      const cancelModalBtn = document.getElementById('cancel-modal-btn');
+      const confirmModalBtn = document.getElementById('confirm-modal-btn');
+      const scriptTextInput = document.getElementById('script-text-input');
+      const modalTitle = document.getElementById('modal-title');
+      const scriptTemplate = document.getElementById('script-template');
+      const noScriptsMessage = document.getElementById('no-scripts-message');
+      let editingScriptId = null; // Para saber se estamos editando ou adicionando
+
+      function getSavedScripts() {
+        const saved = localStorage.getItem('teller_finance_scripts');
         return saved ? JSON.parse(saved) : [];
       }
-      
-      function saveMessages(messages) {
-        localStorage.setItem('whatsapp_messages', JSON.stringify(messages));
+
+      function saveScripts(scripts) {
+        localStorage.setItem('teller_finance_scripts', JSON.stringify(scripts));
       }
-      
-      function updateMessage(id, newText) {
-        const messages = getSavedMessages();
-        const index = messages.findIndex(m => m.id === id);
-        if (index !== -1) {
-          messages[index].text = newText;
-          saveMessages(messages);
+
+      function displayNoScriptsMessage() {
+        const scripts = getSavedScripts();
+        if (scripts.length === 0) {
+            noScriptsMessage.classList.remove('hidden');
+            scriptsContainer.classList.add('p-0', 'sm:p-0'); // Remove padding se não houver scripts
+        } else {
+            noScriptsMessage.classList.add('hidden');
+            scriptsContainer.classList.remove('p-0', 'sm:p-0'); // Adiciona padding de volta se houver scripts
         }
       }
-      
-      function deleteMessage(id) {
-        const messages = getSavedMessages().filter(m => m.id !== id);
-        saveMessages(messages);
-        loadMessages();
+
+      function renderScripts() {
+        scriptsContainer.innerHTML = ''; // Limpa o container antes de renderizar
+        const scripts = getSavedScripts();
+        
+        if (scripts.length === 0) {
+            scriptsContainer.appendChild(noScriptsMessage); // Adiciona a mensagem se não houver scripts
+        } else {
+             scripts.forEach(script => addScriptToDOM(script.id, script.text));
+        }
+        displayNoScriptsMessage();
       }
+
+      function addScriptToDOM(id, text) {
+        const clone = scriptTemplate.firstElementChild.cloneNode(true); // Clona o .script-item
+        clone.setAttribute('data-id', id);
+        
+        const contentArea = clone.querySelector('.content-area');
+        const editArea = clone.querySelector('.edit-area');
+        const scriptContentP = contentArea.querySelector('.script-content');
+        const editTextarea = editArea.querySelector('.edit-textarea');
+        
+        scriptContentP.textContent = text;
+        editTextarea.value = text;
+        
+        // Botões de ação
+        clone.querySelector('.edit-btn').addEventListener('click', () => {
+          contentArea.classList.add('hidden');
+          editArea.classList.remove('hidden');
+        });
+        
+        clone.querySelector('.copy-btn').addEventListener('click', () => {
+          navigator.clipboard.writeText(text).then(() => {
+            alert('Script copiado para a área de transferência!');
+          }).catch(err => console.error('Erro ao copiar:', err));
+        });
+        
+        clone.querySelector('.delete-btn').addEventListener('click', () => {
+          if (confirm('Tem certeza que deseja excluir este script?')) {
+            const scripts = getSavedScripts().filter(s => s.id !== id);
+            saveScripts(scripts);
+            renderScripts();
+          }
+        });
+        
+        // Botões de edição
+        editArea.querySelector('.cancel-edit-btn').addEventListener('click', () => {
+          editTextarea.value = scriptContentP.textContent; // Restaura o texto original
+          contentArea.classList.remove('hidden');
+          editArea.classList.add('hidden');
+        });
+        
+        editArea.querySelector('.save-edit-btn').addEventListener('click', () => {
+          const newText = editTextarea.value.trim();
+          if (newText) {
+            const scripts = getSavedScripts();
+            const index = scripts.findIndex(s => s.id === id);
+            if (index !== -1) {
+              scripts[index].text = newText;
+              saveScripts(scripts);
+              scriptContentP.textContent = newText; // Atualiza o parágrafo
+              contentArea.classList.remove('hidden');
+              editArea.classList.add('hidden');
+            }
+          }
+        });
+        scriptsContainer.appendChild(clone);
+      }
+
+      addNewScriptBtn.addEventListener('click', () => {
+        editingScriptId = null;
+        modalTitle.textContent = 'Adicionar Novo Script';
+        scriptTextInput.value = '';
+        scriptModal.classList.remove('hidden');
+        scriptModal.classList.add('flex'); // Para centralizar com flex
+        scriptTextInput.focus();
+      });
+
+      cancelModalBtn.addEventListener('click', () => {
+        scriptModal.classList.add('hidden');
+        scriptModal.classList.remove('flex');
+      });
+
+      confirmModalBtn.addEventListener('click', () => {
+        const text = scriptTextInput.value.trim();
+        if (!text) {
+          alert("O texto do script não pode estar vazio.");
+          return;
+        }
+
+        let scripts = getSavedScripts();
+        if (editingScriptId) { // Editando
+          // Esta funcionalidade de edição via modal foi removida para simplificar e usar edição inline
+          // Manterei o fluxo de adicionar novo. A edição é feita inline.
+        } else { // Adicionando novo
+          const newId = Date.now().toString();
+          scripts.push({ id: newId, text });
+        }
+        saveScripts(scripts);
+        renderScripts();
+        scriptModal.classList.add('hidden');
+        scriptModal.classList.remove('flex');
+      });
+
+      // Fechar modal clicando fora
+      scriptModal.addEventListener('click', function(event) {
+        if (event.target === scriptModal) {
+            scriptModal.classList.add('hidden');
+            scriptModal.classList.remove('flex');
+        }
+      });
+      
+      renderScripts(); // Carrega os scripts iniciais
+
+      // Lógica para ativar o dropdown pai no menu
+        const currentPathScripts = window.location.pathname.split("/").pop();
+        const dropdownsScripts = document.querySelectorAll('header .dropdown');
+        dropdownsScripts.forEach(dropdown => {
+            const items = dropdown.querySelectorAll('.dropdown-item');
+            let parentIsActive = false;
+            items.forEach(item => {
+                if (item.getAttribute('href') === currentPathScripts) {
+                    item.classList.add('active');
+                    parentIsActive = true;
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            const btn = dropdown.querySelector('.dropdown-btn');
+            if (parentIsActive) {
+                btn.classList.add('active-parent');
+            } else {
+                btn.classList.remove('active-parent');
+            }
+        });
+         // Se nenhum item de dropdown está ativo, verifica se o link "Início" deve estar ativo
+        if (!document.querySelector('header .dropdown-btn.active-parent')) {
+            const inicioLinkScripts = document.querySelector('header a.nav-link[href="index.html"]');
+            if (currentPathScripts === "index.html" || currentPathScripts === "") {
+                if(inicioLinkScripts) inicioLinkScripts.classList.add('active');
+            } else {
+                 if(inicioLinkScripts) inicioLinkScripts.classList.remove('active');
+            }
+        } else {
+             const inicioLinkScripts = document.querySelector('header a.nav-link[href="index.html"]');
+             if(inicioLinkScripts) inicioLinkScripts.classList.remove('active');
+        }
+
     });
   </script>
 </body>

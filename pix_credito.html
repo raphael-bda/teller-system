@@ -3,262 +3,494 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teller - Pix Credito</title>
-  <!-- Import Poppins from Google Fonts -->
+  <title>Teller - PIX / Crédito</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .shadow-custom { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-    .dropdown-menu { display: none; }
-    .dropdown:hover > .dropdown-menu { display: block; }
-    .calculator-card {
-      background: white;
-      border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #1c1e21;
     }
-    .result-box {
-      background: #f0f9ff;
-      border-left: 4px solid #3b82f6;
-      position: relative;
+    .header-shadow { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .nav-link {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770;
+        transition: background-color 0.2s, color 0.2s; border-radius: 0.375rem; display: flex; align-items: center;
     }
-    input[type="range"] {
+    .nav-link:hover { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-btn {
+        padding: 0.75rem 1rem; font-weight: 500; color: #606770; background-color: transparent;
+        border: none; cursor: pointer; border-radius: 0.375rem;
+        transition: background-color 0.2s, color 0.2s; display: flex; align-items: center;
+    }
+    .dropdown-btn:hover, .dropdown-btn.active-parent { background-color: #e7f3ff; color: #1877f2; }
+    .dropdown-content {
+        display: none; position: absolute; left: 0; top: calc(100% + 5px); background-color: white;
+        border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); min-width: 240px;
+        z-index: 50; padding-top: 0.5rem; padding-bottom: 0.5rem;
+    }
+    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown-item {
+        display: block; padding: 0.75rem 1.5rem; color: #1c1e21;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .dropdown-item:hover, .dropdown-item.active { background-color: #f0f2f5; color: #1877f2; font-weight: 500; }
+    .main-content-pt { padding-top: 5rem; }
+
+    .page-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem; 
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px) { .page-card { padding: 2rem; } }
+
+    .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151; }
+    .form-input {
+      width: 100%; padding: 0.75rem 1rem; border: 1px solid #ccd0d5;
+      border-radius: 0.375rem; transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #f5f6f7;
+    }
+    .form-input:focus {
+      outline: none; border-color: #1877f2;
+      box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+      background-color: white;
+    }
+    input[type="range"] { /* Estilização do Range Slider */
       -webkit-appearance: none;
+      width: 100%;
       height: 8px;
-      background: #e5e7eb;
+      background: #dddfe2; /* Cor da trilha */
       border-radius: 4px;
+      outline: none;
+      opacity: 0.9;
+      transition: opacity .15s ease-in-out;
     }
+    input[type="range"]:hover { opacity: 1; }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
+      appearance: none;
       width: 20px;
       height: 20px;
-      background: #3b82f6;
+      background: #1877f2; /* Cor do polegar */
       border-radius: 50%;
       cursor: pointer;
+      border: 2px solid white; /* Borda branca no polegar */
+      box-shadow: 0 0 2px rgba(0,0,0,0.3);
     }
-    .copy-btn {
+    input[type="range"]::-moz-range-thumb { /* Para Firefox */
+      width: 18px;
+      height: 18px;
+      background: #1877f2;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    }
+    .result-box {
+      background: #e7f3ff;
+      border-left: 4px solid #1877f2;
+      position: relative;
+      border-radius: 0.375rem;
+      padding: 1rem;
+    }
+    .copy-btn-result { /* Botão de copiar para o resultado do PIX/Crédito */
       position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      background: #3b82f6;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: #1877f2;
       color: white;
       border: none;
       border-radius: 0.25rem;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
-    .copy-btn:hover {
-      background: #2563eb;
+    .copy-btn-result:hover { background-color: #166fe5; }
+    .info-list li {
+        display: flex;
+        align-items: flex-start; /* Alinha o ícone com o topo do texto */
+        margin-bottom: 0.75rem;
     }
+    .info-list li svg {
+        flex-shrink: 0; /* Previne que o ícone encolha */
+        margin-right: 0.75rem; /* Espaço entre ícone e texto */
+        color: #1877f2; /* Cor do ícone */
+        width: 1.25rem; /* Tamanho do ícone */
+        height: 1.25rem;
+        margin-top: 0.125rem; /* Ajuste vertical fino */
+    }
+    .mobile-menu { background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .mobile-menu-item {
+        padding: 1rem 1.5rem; color: #1c1e21; border-bottom: 1px solid #f0f2f5; font-weight: 500;
+    }
+    .mobile-menu-item:hover, .mobile-menu-item.active { background-color: #e7f3ff; color: #1877f2; }
+    .mobile-menu-item:last-child { border-bottom: none; }
+
+    /* Estilos para a calculadora secreta (reutilizados) */
+    #hidden-calculator-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+    #hidden-calculator-toggle {
+        background-color: #606770; color: white; border-radius: 50%; width: 50px; height: 50px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; transition: background-color 0.3s;
+    }
+    #hidden-calculator-toggle:hover { background-color: #4E535A; }
+    #calculator-popup {
+        background-color: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        width: 280px; padding: 15px; display: none; position: absolute; bottom: 65px; right: 0;
+    }
+    #calculator-display {
+        width: 100%; background-color: #f0f2f5; border: 1px solid #ccd0d5; border-radius: 6px;
+        padding: 10px; text-align: right; font-size: 1.8em; margin-bottom: 15px;
+        color: #1c1e21; height: 60px; overflow: hidden; box-sizing: border-box;
+    }
+    .calculator-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .calculator-buttons button {
+        background-color: #e4e6eb; border: none; border-radius: 6px; padding: 15px 0;
+        font-size: 1.1em; font-weight: 500; color: #1c1e21; cursor: pointer; transition: background-color 0.2s;
+    }
+    .calculator-buttons button:hover { background-color: #d8dbdf; }
+    .calculator-buttons button.operator { background-color: #f0f2f5; }
+    .calculator-buttons button.operator:hover { background-color: #e0e2e7; }
+    .calculator-buttons button.equals { background-color: #1877f2; color: white; }
+    .calculator-buttons button.equals:hover { background-color: #166fe5; }
+    .calculator-buttons button.clear { background-color: #fa3e3e; color: white; }
+    .calculator-buttons button.clear:hover { background-color: #e03030; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  
-<header class="fixed w-full bg-white shadow-custom z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <div class="flex-shrink-0">
-        <a href="index.html">
-          <img class="h-16 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
-        </a>
-      </div>
-      <nav class="hidden md:flex space-x-8 items-center">
-        <a href="index.html" class="px-3 py-2 hover:text-blue-600 font-medium">Início</a>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Financeiro</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-            <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-            <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-            <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-            <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-          </div>
+<body>
+  <header class="fixed w-full bg-white header-shadow z-50 h-16">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div class="flex justify-between items-center h-full">
+            <div class="flex-shrink-0">
+                <a href="index.html">
+                    <img class="h-12 sm:h-14 w-auto" src="IMG/Teller Logo.png" alt="Teller Logo" />
+                </a>
+            </div>
+            <nav class="hidden md:flex space-x-1 items-center">
+                <a href="index.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Início
+                </a>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn active-parent">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Financeiro
+                        <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="financeiro_dashboard.html" class="dropdown-item">Dashboard</a>
+                        <a href="boleto.html" class="dropdown-item">Boleto</a>
+                        <a href="pix_credito.html" class="dropdown-item active">PIX / Crédito</a>
+                        <a href="multa.html" class="dropdown-item">Multa</a>
+                        <a href="trancamento.html" class="dropdown-item">Trancamento</a>
+                        <a href="destrancamento.html" class="dropdown-item">Destrancamento</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.552-.257m-4.286 3.15A4.5 4.5 0 004 10.5v1.75A4.5 4.5 0 008.5 16.5h3A4.5 4.5 0 0016 12.25v-1.75a4.5 4.5 0 00-1.849-3.676l-.516-.344a2.5 2.5 0 00-3.206 1.08L8.433 7.418zM12 10.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path><path d="M15.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM4.5 6.25a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM1.155 8.019A4.502 4.502 0 014 4.5h3.5A4.502 4.502 0 0111.345 8.02l.065.043a2.5 2.5 0 013.416-1.027L16 7.5V4.5a2 2 0 00-2-2h- 상황에 따라 채워넣기"></path></svg>
+                        Comercial
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_comercial.html" class="dropdown-item">Contratos Comercial</a>
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda (Comercial)</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 018.5 8H11a1 1 0 01.949.684l.57 2.285a1 1 0 01-.364 1.118l-2.423 1.818a1 1 0 00-.364 1.118l.57 2.285A1 1 0 018.949 18H6.153a1 1 0 01-.986-.836l-.74-4.435A1 1 0 013.5 12H2a1 1 0 01-1-1V4a1 1 0 011-1zm14 0a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435A1 1 0 0118.5 8H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818A1 1 0 0018.5 14H16a1 1 0 01-.949.684l-.57 2.285a1 1 0 01.364 1.118l2.423 1.818a1 1 0 00.949.684h2.153a1 1 0 00.986-.836l.74-4.435A1 1 0 0018.5 12H17a1 1 0 00-1-1V4a1 1 0 001-1z"></path></svg>
+                        Pós-Venda
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="contratos_pos_venda.html" class="dropdown-item">Contratos Pós-Venda</a>
+                    </div>
+                </div>
+                <div class="relative dropdown">
+                    <button class="dropdown-btn">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                        Geral
+                         <svg class="w-4 h-4 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="procfinanceiro.html" class="dropdown-item">Procedimentos</a>
+                        <a href="scriptfinanceiro.html" class="dropdown-item">Scripts</a>
+                    </div>
+                </div>
+                <a href="contato.html" class="nav-link">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                    Contato
+                </a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Comercial</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Pós-Venda</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-          </div>
-        </div>
-        <div class="relative dropdown inline-block">
-          <button class="px-3 py-2 hover:text-blue-600 focus:outline-none">Geral</button>
-          <div class="absolute left-0 top-full bg-white rounded-md shadow-lg dropdown-menu mt-0">
-            <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-            <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-          </div>
-        </div>
-        <a href="contato.html" class="px-3 py-2 hover:text-blue-600 font-medium">Contato</a>
-      </nav>
-      <div class="md:hidden">
-        <button id="mobile-menu-btn" class="p-2 focus:outline-none">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-      </div>
     </div>
-  </div>
-  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-custom">
-    <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Início</a>
-    <a href="boleto.html" class="block px-4 py-2 hover:bg-gray-100">Boleto</a>
-    <a href="pix_credito.html" class="block px-4 py-2 hover:bg-gray-100">PIX / Crédito</a>
-    <a href="multa.html" class="block px-4 py-2 hover:bg-gray-100">Multa</a>
-    <a href="trancamento.html" class="block px-4 py-2 hover:bg-gray-100">Trancamento</a>
-    <a href="destrancamento.html" class="block px-4 py-2 hover:bg-gray-100">Destrancamento</a>
-    <a href="contratos_comercial.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Comercial</a>
-    <a href="contratos_pos_venda.html" class="block px-4 py-2 hover:bg-gray-100">Contratos Pós-Venda</a>
-    <a href="procfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Procedimentos</a>
-    <a href="scriptfinanceiro.html" class="block px-4 py-2 hover:bg-gray-100">Scripts</a>
-    <a href="contato.html" class="block px-4 py-2 hover:bg-gray-100">Contato</a>
-  </div>
-</header>
-<script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-</script>
+    <div id="mobile-menu" class="mobile-menu md:hidden hidden">
+        <a href="index.html" class="mobile-menu-item">Início</a>
+        <a href="financeiro_dashboard.html" class="mobile-menu-item">Dashboard Financeiro</a>
+        <a href="boleto.html" class="mobile-menu-item">Boleto</a>
+        <a href="pix_credito.html" class="mobile-menu-item active">PIX / Crédito</a>
+        <a href="multa.html" class="mobile-menu-item">Multa</a>
+        <a href="trancamento.html" class="mobile-menu-item">Trancamento</a>
+        <a href="destrancamento.html" class="mobile-menu-item">Destrancamento</a>
+        <a href="contratos_comercial.html" class="mobile-menu-item">Contratos Comercial</a>
+        <a href="contratos_pos_venda.html" class="mobile-menu-item">Contratos Pós-Venda</a>
+        <a href="procfinanceiro.html" class="mobile-menu-item">Procedimentos</a>
+        <a href="scriptfinanceiro.html" class="mobile-menu-item">Scripts</a>
+        <a href="contato.html" class="mobile-menu-item">Contato</a>
+    </div>
+  </header>
 
-  <main class="pt-24 max-w-4xl mx-auto py-8 px-4 sm:px-6">
-    <h1 class='text-2xl font-semibold mb-2 text-blue-800'>PIX / Crédito</h1>
-    <p class="text-gray-600 mb-6">Operação de PIX e crédito disponível.</p>
+  <main class="main-content-pt">
+    <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Calculadora de Desconto PIX / Crédito</h1>
+            <p class="mt-2 text-lg text-gray-600">Simule descontos para pagamentos à vista via PIX ou parcelados no cartão.</p>
+        </div>
     
-    <div class="calculator-card p-6 mb-8">
-      <h2 class="text-xl font-bold mb-4 text-center">CALCULADORA DE DESCONTO PIX/CRÉDITO</h2>
-      <p class="text-center text-gray-600 mb-6">Cálculo Abaixo:</p>
-      
-      <div class="space-y-4">
-        <div>
-          <label for="total-value" class="block text-sm font-medium text-gray-700 mb-1">Digite o valor total:</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
-            <input type="number" id="total-value" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Valor da dívida">
+        <div class="page-card mb-8">
+          <h2 class="text-xl font-semibold mb-6 text-gray-700 text-center">SIMULADOR DE DESCONTO</h2>
+          
+          <div class="space-y-6">
+            <div>
+              <label for="total-value" class="form-label">Valor Total da Dívida (R$):</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 pointer-events-none">R$</span>
+                <input type="number" id="total-value" class="form-input pl-10" placeholder="Ex: 1000.00" step="0.01" min="0">
+              </div>
+            </div>
+            
+            <div>
+              <label for="discount-percent" class="form-label">Percentual de Desconto (<span id="percent-value" class="font-semibold text-blue-600">10%</span>):</label>
+              <input type="range" id="discount-percent" min="10" max="20" step="1" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-sm text-gray-500 mt-1">
+                <span>10%</span>
+                <span>15%</span>
+                <span>20%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div id="result-container" class="result-box p-4 mt-8 hidden">
+            <button id="copy-btn-result" class="copy-btn-result">Copiar</button>
+            <p class="text-sm font-medium text-gray-700 mb-2">DESCONTO EM PAGAMENTO À VISTA (PIX) OU NO CARTÃO DE CRÉDITO (ATÉ 12X)</p>
+            <div class="flex items-baseline justify-between">
+              <div class="text-gray-500 line-through text-lg">
+                De <span id="original-value">R$ 0,00</span>
+              </div>
+              <div class="text-blue-600 font-bold text-3xl">
+                Por <span id="discounted-value">R$ 0,00</span>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">* Desconto de <span id="discount-percent-text" class="font-semibold">10%</span> aplicado.</p>
           </div>
         </div>
         
-        <div>
-          <label for="discount-percent" class="block text-sm font-medium text-gray-700 mb-1">Selecione o percentual de desconto:</label>
-          <div class="flex items-center space-x-4">
-            <input type="range" id="discount-percent" min="10" max="20" step="1" value="10" class="flex-1">
-            <span id="percent-value" class="text-blue-600 font-medium">10%</span>
-          </div>
-          <div class="flex justify-between text-xs text-gray-500 mt-1">
-            <span>10%</span>
-            <span>20%</span>
-          </div>
+        <div class="page-card">
+          <h3 class="text-lg font-semibold mb-4 text-gray-700">Informações Adicionais:</h3>
+          <ul class="info-list text-gray-600 space-y-3">
+            <li>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Pagamentos via PIX recebem desconto progressivo de 10% a 20%, dependendo da negociação e valor.</span>
+            </li>
+            <li>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                <span>Valores no cartão de crédito podem ser parcelados em até 12 vezes sem juros (verificar taxas da maquininha para o Teller).</span>
+            </li>
+            <li>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.79 4 4s-1.79 4-4 4c-1.742 0-3.223-.835-3.772-2M12 12H4M4 12L8 8M4 12l4 4m12-4h-8m8 0l-4-4m4 4l-4 4"></path></svg>
+                <span>Para negociações com valores acima de R$ 5.000,00, consulte a gerência para condições especiais e descontos maiores.</span>
+            </li>
+          </ul>
         </div>
-      </div>
-      
-      <div id="result-container" class="result-box p-4 mt-6 hidden">
-        <button id="copy-btn" class="copy-btn">Copiar</button>
-        <p class="text-sm font-medium text-gray-600 mb-2">DESCONTO EM PAGAMENTO À VISTA VIA PIX OU NO CARTÃO DE CRÉDITO EM ATÉ 12X</p>
-        <div class="flex items-center justify-between">
-          <div class="text-gray-500 line-through">
-            De <span id="original-value">R$ 0,00</span>
-          </div>
-          <div class="text-blue-600 font-bold text-xl">
-            por <span id="discounted-value">R$ 0,00</span>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500 mt-2">* Desconto de <span id="discount-percent-text">10%</span> aplicado</p>
-      </div>
-    </div>
-    
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h3 class="text-lg font-semibold mb-4">Informações sobre pagamentos:</h3>
-      <ul class="space-y-2 text-gray-700">
-        <li class="flex items-start">
-          <span class="mr-2">•</span>
-          <span>Pagamentos via PIX têm desconto de 10% a 20% conforme negociação</span>
-        </li>
-        <li class="flex items-start">
-          <span class="mr-2">•</span>
-          <span>Cartão de crédito pode ser parcelado em até 12x sem juros</span>
-        </li>
-        <li class="flex items-start">
-          <span class="mr-2">•</span>
-          <span>Para valores acima de R$ 5.000,00, consulte condições especiais</span>
-        </li>
-      </ul>
     </div>
   </main>
 
+  <footer class="bg-gray-800 text-gray-300 mt-16">
+    <div class="max-w-screen-xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+        <p>© <span id="currentYear"></span> Teller. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Calculadora Secreta -->
+  <div id="hidden-calculator-container">
+    <div id="calculator-popup">
+        <div id="calculator-display">0</div>
+        <div class="calculator-buttons">
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="setOperator('/')">/</button>
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="setOperator('*')">x</button>
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="setOperator('-')">-</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class="equals" onclick="calculateResult()">=</button>
+            <button class="operator" onclick="setOperator('+')">+</button>
+            <button class="clear" onclick="clearDisplay()" style="grid-column: span 4;">Limpar</button>
+        </div>
+    </div>
+    <div id="hidden-calculator-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="12" y1="10" x2="12" y2="18"></line><line x1="8" y1="14" x2="16" y2="14"></line></svg>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // --- Início Script Menu Mobile e Footer ---
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); mobileMenu.classList.toggle('hidden'); });
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+        }
+      });
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+      // --- Fim Script Menu Mobile e Footer ---
+
       const totalValueInput = document.getElementById('total-value');
       const discountPercentSlider = document.getElementById('discount-percent');
-      const percentValue = document.getElementById('percent-value');
-      const discountPercentText = document.getElementById('discount-percent-text');
+      const percentValueDisplay = document.getElementById('percent-value'); // Display do percentual ao lado do label
+      const discountPercentTextResult = document.getElementById('discount-percent-text'); // Display do percentual no resultado
       const resultContainer = document.getElementById('result-container');
-      const originalValue = document.getElementById('original-value');
-      const discountedValue = document.getElementById('discounted-value');
-      const copyBtn = document.getElementById('copy-btn');
+      const originalValueDisplay = document.getElementById('original-value');
+      const discountedValueDisplay = document.getElementById('discounted-value');
+      const copyBtnResult = document.getElementById('copy-btn-result');
       
-      // Atualizar valor do percentual quando o slider muda
-      discountPercentSlider.addEventListener('input', function() {
-        const percent = this.value;
-        percentValue.textContent = percent + '%';
-        discountPercentText.textContent = percent + '%';
-        calculateDiscount();
-      });
-      
-      // Calcular desconto quando o valor total muda
-      totalValueInput.addEventListener('input', calculateDiscount);
-      
-      // Copiar resultado para área de transferência
-      copyBtn.addEventListener('click', copyResultToClipboard);
-      
-      function calculateDiscount() {
+      function calculateAndDisplayDiscount() {
         const total = parseFloat(totalValueInput.value);
         const percent = parseFloat(discountPercentSlider.value);
         
-        if (total && total > 0) {
-          const discount = total * (percent / 100);
-          const finalValue = total - discount;
+        percentValueDisplay.textContent = percent + '%'; // Atualiza o label do slider
+        
+        if (!isNaN(total) && total > 0) {
+          const discountAmount = total * (percent / 100);
+          const finalValue = total - discountAmount;
           
-          originalValue.textContent = formatCurrency(total);
-          discountedValue.textContent = formatCurrency(finalValue);
+          originalValueDisplay.textContent = formatCurrency(total);
+          discountedValueDisplay.textContent = formatCurrency(finalValue);
+          discountPercentTextResult.textContent = percent + '%'; // Atualiza o texto do resultado
           resultContainer.classList.remove('hidden');
         } else {
           resultContainer.classList.add('hidden');
         }
       }
       
-      function formatCurrency(value) {
-        return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
-      }
+      discountPercentSlider.addEventListener('input', calculateAndDisplayDiscount);
+      totalValueInput.addEventListener('input', calculateAndDisplayDiscount);
       
-      function copyResultToClipboard() {
+      copyBtnResult.addEventListener('click', function() {
         const total = parseFloat(totalValueInput.value);
         const percent = parseFloat(discountPercentSlider.value);
-        const discount = total * (percent / 100);
-        const finalValue = total - discount;
         
-        const textToCopy = `💰 *Oferta especial* 💰\n\n` +
-                          `De: ${formatCurrency(total)}\n` +
-                          `Por: ${formatCurrency(finalValue)}\n` +
-                          `*Desconto de ${percent}%*\n\n` +
-                          `Pagamento à vista via PIX ou no cartão de crédito em até 12x\n\n` +
-                          `Interessado(a)? Posso ajudar com o pagamento!`;
+        if (isNaN(total) || total <= 0) {
+            alert("Por favor, insira um valor total válido.");
+            return;
+        }
+
+        const discountAmount = total * (percent / 100);
+        const finalValue = total - discountAmount;
+        
+        const textToCopy = `💰 *Oferta Especial Teller!*\n\n` +
+                          `Valor Original: ${formatCurrency(total)}\n` +
+                          `Desconto Aplicado: ${percent}%\n` +
+                          `✨ *Valor com Desconto: ${formatCurrency(finalValue)}* ✨\n\n` +
+                          `Condição válida para pagamento à vista via PIX ou no cartão de crédito em até 12x (consulte condições de parcelamento).\n\n` +
+                          `Aproveite esta oportunidade! Posso ajudar com o processo de pagamento?`;
         
         navigator.clipboard.writeText(textToCopy).then(() => {
-          // Altera o texto do botão temporariamente para confirmar a cópia
-          copyBtn.textContent = 'Copiado!';
+          const originalButtonText = copyBtnResult.textContent;
+          copyBtnResult.textContent = 'Copiado!';
           setTimeout(() => {
-            copyBtn.textContent = 'Copiar';
+            copyBtnResult.textContent = originalButtonText;
           }, 2000);
         }).catch(err => {
           console.error('Erro ao copiar texto: ', err);
           alert('Não foi possível copiar o texto. Por favor, copie manualmente.');
         });
+      });
+
+      function formatCurrency(value) {
+        if (isNaN(value)) return 'R$ 0,00';
+        return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
       }
+
+      // --- Início Script Calculadora Secreta ---
+      const calculatorToggle = document.getElementById('hidden-calculator-toggle');
+      const calculatorPopup = document.getElementById('calculator-popup');
+      const calculatorDisplay = document.getElementById('calculator-display');
+      let currentInput = '0';
+      let operator = null;
+      let previousInput = null;
+      let shouldResetDisplay = false;
+
+      calculatorToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          calculatorPopup.style.display = calculatorPopup.style.display === 'block' ? 'none' : 'block';
+      });
+      document.addEventListener('click', function(e) {
+        if (calculatorPopup.style.display === 'block' && !calculatorPopup.contains(e.target) && e.target !== calculatorToggle && !calculatorToggle.contains(e.target) ) {
+          calculatorPopup.style.display = 'none';
+        }
+      });
+
+      window.appendToDisplay = function(value) {
+          if (currentInput === '0' && value !== '.') currentInput = '';
+          if (shouldResetDisplay) { currentInput = ''; shouldResetDisplay = false; }
+          if (value === '.' && currentInput.includes('.')) return;
+          currentInput += value;
+          updateDisplay();
+      }
+      window.setOperator = function(op) {
+          if (currentInput === '' && previousInput === null) return;
+          if (operator !== null && !shouldResetDisplay) { calculateResult(); }
+          operator = op;
+          previousInput = currentInput;
+          shouldResetDisplay = true;
+      }
+      window.calculateResult = function() {
+          if (operator === null || previousInput === null || currentInput === '') return;
+          let prev = parseFloat(previousInput);
+          let current = parseFloat(currentInput);
+          let result;
+          switch (operator) {
+              case '+': result = prev + current; break;
+              case '-': result = prev - current; break;
+              case '*': result = prev * current; break;
+              case '/': result = current === 0 ? 'Erro' : prev / current; break;
+              default: return;
+          }
+          currentInput = (typeof result === 'number') ? String(parseFloat(result.toFixed(8))) : result;
+          operator = null; previousInput = null; shouldResetDisplay = true;
+          updateDisplay();
+      }
+      window.clearDisplay = function() {
+          currentInput = '0'; operator = null; previousInput = null; shouldResetDisplay = false;
+          updateDisplay();
+      }
+      function updateDisplay() {
+          calculatorDisplay.textContent = currentInput.length > 12 ? parseFloat(currentInput).toExponential(5) : currentInput;
+      }
+      // --- Fim Script Calculadora Secreta ---
     });
   </script>
 </body>
